@@ -92,6 +92,16 @@ $appointments = $stmt->get_result();
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
+                    <h5 class="card-title">Chat with Patient</h5>
+                    <p class="card-text">Answer patient's questions or explain things to them.</p>
+                    <a href="chat_system.php" class="btn btn-primary">Chat</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
                 <h5 class="card-title">My Profile</h5>
                 <p class="card-text">View and update your profile.</p>
                 <a href="doctor_profile.php" class="btn btn-primary">View Profile</a>

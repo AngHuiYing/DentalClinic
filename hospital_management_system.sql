@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 26, 2025 at 04:01 AM
+-- Generation Time: Mar 27, 2025 at 07:21 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -94,7 +94,16 @@ INSERT INTO `chat_messages` (`id`, `sender_id`, `receiver_id`, `message`, `times
 (3, 1, 1, 'hhh', '2025-03-25 02:21:02', 'sent'),
 (4, 1, 1, 'hi', '2025-03-25 02:29:38', 'sent'),
 (5, 1, 1, 'test', '2025-03-25 02:44:09', 'sent'),
-(6, 1, 1, 'ddd', '2025-03-25 02:52:32', 'sent');
+(6, 1, 1, 'ddd', '2025-03-25 02:52:32', 'sent'),
+(8, 10, 7, 'hi', '2025-03-27 01:50:53', 'sent'),
+(9, 10, 1, 'tttt', '2025-03-27 02:04:55', 'sent'),
+(10, 10, 1, 'gggggg', '2025-03-27 02:09:47', 'sent'),
+(12, 10, 4, 'hi', '2025-03-27 03:44:06', 'sent'),
+(13, 10, 5, 'I have a question', '2025-03-27 03:44:43', 'sent'),
+(14, 5, 10, 'Yes? Any question?', '2025-03-27 05:43:22', 'sent'),
+(15, 4, 10, 'Yes?', '2025-03-27 05:59:16', 'sent'),
+(16, 5, 1, 'Are you allergic to anything?', '2025-03-27 06:19:31', 'sent'),
+(17, 1, 5, 'No', '2025-03-27 06:20:10', 'sent');
 
 -- --------------------------------------------------------
 
@@ -245,7 +254,8 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VA
 (5, 'ZhongLi', 'zhongli@mail.com', '$2y$10$rihF7UnM2wOfomYV4V2eseBYHQOUx9YYtgdNo7Z4QwpkeMzgJAlAm', 'doctor', '2025-03-21 06:22:39'),
 (6, 'William', 'william@mail.com', '$2y$10$z2mZnS3MYHMeWvqlAKfaxuFs64mI4I/OaLEkdwZfWXVJdhyykhrAe', 'doctor', '2025-03-23 04:19:10'),
 (7, 'John', 'john@mail.com', '$2y$10$YJ1RbdKUP8cWdFVxfNotX.8ipKk1ZmiGnw3a/sUzsbK7CbaG8S.8u', 'doctor', '2025-03-23 04:20:43'),
-(9, 'hy', 'huiyingsyzz@gmail.com', '$2y$10$daYSjqmIpUvcNBUDDujSGuQlnQ1iLvYRS2Xyry48rrYTtQtPf1lw.', 'doctor', '2025-03-24 02:08:26');
+(9, 'hy', 'huiyingsyzz@gmail.com', '$2y$10$daYSjqmIpUvcNBUDDujSGuQlnQ1iLvYRS2Xyry48rrYTtQtPf1lw.', 'doctor', '2025-03-24 02:08:26'),
+(10, 'tulips', 'tulips@gmail.com', '$2y$10$8CnpMBHKGMHpv8.VCa7BCueCSYj/l6lZallL6jhxzezRxlWDh.Ckq', 'patient', '2025-03-27 01:50:15');
 
 -- --------------------------------------------------------
 
@@ -382,7 +392,7 @@ ALTER TABLE `appointments`
 -- AUTO_INCREMENT for table `chat_messages`
 --
 ALTER TABLE `chat_messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `doctors`
@@ -418,7 +428,7 @@ ALTER TABLE `password_resets`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `user_logs`

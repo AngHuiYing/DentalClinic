@@ -63,6 +63,17 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'patient') {
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Chat with Doctor</h5>
+                </div>
+                <div class="card-body">
+                    <p>Chat with doctor if have any question.</p>
+                    <a href="chat_system.php" class="btn btn-success">Chat</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </body>

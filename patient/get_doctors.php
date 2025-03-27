@@ -5,7 +5,7 @@ header('Access-Control-Allow-Methods: GET');
 
 include '../includes/db.php';
 
-$sql = "SELECT id, name FROM doctors"; // 确保表名正确
+$sql = "SELECT id, name FROM users WHERE role = 'doctor'"; // 确保表名正确
 $result = $conn->query($sql);
 
 $doctors = [];

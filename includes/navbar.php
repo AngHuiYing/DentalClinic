@@ -135,6 +135,7 @@ $current_url = $_SERVER['PHP_SELF'];
                 <li><a href="/Hospital_Management_System/doctor/patient_history.php">Medical Records</a></li>
                 <li><a href="/Hospital_Management_System/doctor/manage_appointments.php">Manage Appointments</a></li>
                 <li><a href="/Hospital_Management_System/doctor/messages.php">Message from Users</a></li>
+                <li><a href="/Hospital_Management_System/doctor/chat_system.php">Chat with Patient</a></li>
                 <li><a href="/Hospital_Management_System/doctor/doctor_profile.php">My Profile</a></li>
                 <li><a href="/Hospital_Management_System/doctor/logout.php">Logout</a></li>
             <?php } elseif (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'patient') { ?>
@@ -144,6 +145,7 @@ $current_url = $_SERVER['PHP_SELF'];
                 <li><a href="/Hospital_Management_System/patient/my_appointments.php">My Appointments</a></li>
                 <li><a href="/Hospital_Management_System/patient/patient_history.php">My Medical History</a></li>
                 <li><a href="/Hospital_Management_System/patient/message.php">Send Message</a></li>
+                <li><a href="/Hospital_Management_System/patient/chat_system.php">Chat with Doctor</a></li>
                 <li><a href="/Hospital_Management_System/patient/logout.php">Logout</a></li>
             <?php } elseif (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) { ?>
                 <!-- 未登录用户导航菜单 -->

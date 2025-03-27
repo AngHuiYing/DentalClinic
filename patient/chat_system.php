@@ -17,6 +17,7 @@ session_start(); // 确保 SESSION 被启用
             overflow-y: scroll;
             border: 1px solid #ccc;
             padding: 10px;
+            background-color: white;
         }
         .message {
             padding: 8px;
@@ -37,13 +38,21 @@ session_start(); // 确保 SESSION 被启用
     </style>
 </head>
 <body>
+<?php include '../includes/navbar.php'; ?>
     <div class="container mt-3">
         <h3>Chat with a Doctor</h3>
 
         <!-- Doctor Selection Dropdown -->
-        <select id="doctor-list" class="form-control">
-            <option value="">Select a Doctor</option>
-        </select>
+        <select id="doctor-list">
+    <?php
+    include 'includes/db.php';
+    $sql = "SELECT id, name FROM users WHERE role = 'doctor'"; // 确保选的 ID 是 `users` 表里的医生 ID
+    $result = $conn->query($sql);
+    while ($row = $result->fetch_assoc()) {
+        echo "<option value='{$row['id']}'>{$row['name']}</option>";
+    }
+    ?>
+</select>
 
         <div id="chat-box" class="d-flex flex-column mt-3"></div>
         <textarea id="message" class="form-control mt-2" placeholder="Type a message"></textarea>
@@ -95,11 +104,11 @@ function fetchMessages() {
         console.log("⚠️ No doctor selected!");
         return;
     }
-    
-    console.log("Fetching messages for doctor ID:", receiver_id);
+
+    console.log("📩 Fetching messages with doctor ID:", receiver_id);
 
     $.get("../get_messages.php", { receiver_id: receiver_id }, function (data) {
-        console.log("Messages JSON:", data);
+        console.log("📨 Messages JSON:", data);
         try {
             let messages = JSON.parse(data);
             $("#chat-box").html("");
@@ -109,43 +118,45 @@ function fetchMessages() {
             });
             $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
         } catch (e) {
-            console.error("Error parsing messages JSON:", e);
+            console.error("⚠️ Error parsing messages JSON:", e);
         }
     }).fail(function(jqXHR, textStatus, errorThrown) {
-        console.error("Error fetching messages:", textStatus, errorThrown);
+        console.error("⚠️ Error fetching messages:", textStatus, errorThrown);
     });
 }
 
 function sendMessage() {
-    let message = $("#message").val();
+    let message = $("#message").val().trim();
     let receiver_id = $("#doctor-list").val();
-    let sender_id = <?php echo $_SESSION['user_id']; ?>; // 获取当前用户ID
+    let sender_id = <?php echo $_SESSION['user_id']; ?>;
 
-    if (message.trim() !== "" && receiver_id) {
-        console.log("Sending message to receiver_id:", receiver_id); // 确保 receiver_id 是 7
+    console.log("Selected receiver_id before sending:", receiver_id);
 
-        $.post("../send_messages.php", { 
-            message: message, 
-            receiver_id: receiver_id 
-        }, function (response) {
-            console.log("Send message response:", response);
-            try {
-                let res = JSON.parse(response);
-                if (res.status === "success") {
-                    $("#message").val(""); 
-                    fetchMessages();
-                } else {
-                    console.error("Message send failed:", res);
-                }
-            } catch (e) {
-                console.error("Error parsing send message response:", e);
-            }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.error("Error sending message:", textStatus, errorThrown);
-        });
+    if (!message || !receiver_id) {
+        console.error("Invalid message or receiver ID!");
+        return;
     }
-}
 
+    $.post("../send_messages.php", { 
+        message: message, 
+        receiver_id: receiver_id 
+    }, function (response) {
+        console.log("Send message response:", response);
+        try {
+            let res = JSON.parse(response);
+            if (res.status === "success") {
+                $("#message").val(""); 
+                fetchMessages();
+            } else {
+                console.error("Message send failed:", res);
+            }
+        } catch (e) {
+            console.error("Error parsing send message response:", e);
+        }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.error("Error sending message:", textStatus, errorThrown);
+    });
+}
     </script>
 </body>
 </html>
