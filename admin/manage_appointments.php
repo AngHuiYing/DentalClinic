@@ -61,7 +61,7 @@ $sql = "
            a.created_at
     FROM appointments a
     LEFT JOIN users p ON a.patient_id = p.id AND p.role = 'patient'
-    LEFT JOIN users d ON a.doctor_id = d.id AND d.role = 'doctor'
+    LEFT JOIN doctors d ON a.doctor_id = d.id
     WHERE p.name LIKE ? OR d.name LIKE ? OR a.status LIKE ?
     ORDER BY a.appointment_date DESC, a.appointment_time ASC
 ";

@@ -56,7 +56,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_status'])) {
 }
 
 // **获取医生的所有预约**
-$sql = "SELECT a.id, u.name AS patient, a.appointment_date, a.appointment_time, a.status
+// **获取医生的所有预约**
+$sql = "SELECT a.id, u.name AS patient, u.email, a.appointment_date, a.appointment_time, a.status
         FROM appointments a
         JOIN users u ON a.patient_id = u.id
         WHERE a.doctor_id = ?
@@ -83,40 +84,48 @@ $appointments = $stmt->get_result();
             <thead>
                 <tr>
                     <th>Patient</th>
+                    <th>Email</th>
                     <th>Date</th>
                     <th>Time</th>
                     <th>Status</th>
                     <th>Action</th>
+                    <th>Contact</th>
                 </tr>
             </thead>
             <tbody>
-                <?php while ($row = $appointments->fetch_assoc()) { ?>
-                    <tr>
-                        <td><?= htmlspecialchars($row['patient']); ?></td>
-                        <td><?= htmlspecialchars($row['appointment_date']); ?></td>
-                        <td><?= htmlspecialchars($row['appointment_time']); ?></td>
-                        <td>
-                            <span class="badge <?= 
-                                $row['status'] == 'approved' ? 'bg-success' : 
-                                ($row['status'] == 'cancelled' ? 'bg-danger' : 'bg-warning'); 
-                            ?>">
-                                <?= ucfirst($row['status']); ?>
-                            </span>
-                        </td>
-                        <td>
-                            <form method="POST" class="d-flex">
-                                <input type="hidden" name="appointment_id" value="<?= $row['id']; ?>">
-                                <select name="status" class="form-select me-2">
-                                    <option value="pending" <?= $row['status'] == 'pending' ? 'selected' : ''; ?>>Pending</option>
-                                    <option value="approved" <?= $row['status'] == 'approved' ? 'selected' : ''; ?>>Approved</option>
-                                    <option value="cancelled" <?= $row['status'] == 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
-                                </select>
-                                <button type="submit" name="update_status" class="btn btn-primary">Update</button>
-                            </form>
-                        </td>
-                    </tr>
-                <?php } ?>
-            </tbody>
+    <?php while ($row = $appointments->fetch_assoc()) { ?>
+        <tr>
+            <td><?= htmlspecialchars($row['patient']); ?></td>
+            <td><?= htmlspecialchars($row['email']); ?></td> <!-- 显示患者的电子邮件 -->
+            <td><?= htmlspecialchars($row['appointment_date']); ?></td>
+            <td><?= htmlspecialchars($row['appointment_time']); ?></td>
+            <td>
+                <span class="badge <?= 
+                    $row['status'] == 'approved' ? 'bg-success' : 
+                    ($row['status'] == 'cancelled' ? 'bg-danger' : 'bg-warning'); 
+                ?>">
+                    <?= ucfirst($row['status']); ?>
+                </span>
+            </td>
+            <td>
+                <form method="POST" class="d-flex">
+                    <input type="hidden" name="appointment_id" value="<?= $row['id']; ?>">
+                    <select name="status" class="form-select me-2">
+                        <option value="pending" <?= $row['status'] == 'pending' ? 'selected' : ''; ?>>Pending</option>
+                        <option value="approved" <?= $row['status'] == 'approved' ? 'selected' : ''; ?>>Approved</option>
+                        <option value="cancelled" <?= $row['status'] == 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+                    </select>
+                    <button type="submit" name="update_status" class="btn btn-primary">Update</button>
+                </form>
+            </td>
+            <td>
+                <a href="mailto:<?php echo $row['email']; ?>?subject=Reply from Green Life Hospital">
+                    Send Mail
+                </a>
+            </td>
+        </tr>
+    <?php } ?>
+</tbody>
         </table>
     <?php } else { ?>
         <div class="alert alert-info mt-3">You have no appointments.</div>

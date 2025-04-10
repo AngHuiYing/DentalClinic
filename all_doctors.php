@@ -140,9 +140,9 @@ $result = $stmt->get_result();
                         <a href="../Hospital_Management_System/doctor/doctor_details.php?id=<?= $doctor['id'] ?>" class="btn">View Details</a>
 
                         <?php if (isset($_SESSION['user_id'])): ?>
-                            <a href="book_appointment.php?doctor=<?= $doctor['id'] ?>" class="btn">Book Appointment</a>
+                            <a href="../Hospital_Management_System/patient/book_appointment.php?doctor=<?= $doctor['id'] ?>" class="btn">Book Appointment</a>
                         <?php else: ?>
-                            <a href="login.php" class="btn">Login to Book</a>
+                            <a href="../Hospital_Management_System/patient/login.php" class="btn">Login to Book</a>
                         <?php endif; ?>
                     </div>
                 </div>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 27, 2025 at 07:21 AM
+-- Generation Time: Apr 10, 2025 at 02:38 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,7 +42,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `username`, `password`, `email`, `name`, `created_at`, `last_login`) VALUES
-(1, 'admin', '$2y$10$EKnGlwO9OClDZwN985u2WOTtSb0vMNpHPLDjBLEU4S9mvt8v0lZhq', 'admin@clinic.com', 'System Administrator', '2025-03-14 06:11:49', '2025-03-25 03:14:24');
+(1, 'admin', '$2y$10$EKnGlwO9OClDZwN985u2WOTtSb0vMNpHPLDjBLEU4S9mvt8v0lZhq', 'admin@clinic.com', 'System Administrator', '2025-03-14 06:11:49', '2025-04-09 06:30:33');
 
 -- --------------------------------------------------------
 
@@ -67,7 +67,20 @@ CREATE TABLE `appointments` (
 INSERT INTO `appointments` (`id`, `patient_id`, `doctor_id`, `appointment_date`, `appointment_time`, `status`, `created_at`) VALUES
 (1, 1, 2, '2025-03-21', '10:52:00', 'approved', '2025-03-21 03:36:48'),
 (2, 1, 2, '2025-03-23', '12:14:00', 'pending', '2025-03-23 04:14:22'),
-(3, 1, 5, '2025-03-26', '12:17:00', 'approved', '2025-03-23 04:16:44');
+(3, 1, 5, '2025-03-26', '12:17:00', 'approved', '2025-03-23 04:16:44'),
+(5, 1, 2, '2025-04-01', '10:37:00', 'pending', '2025-04-07 03:37:27'),
+(7, 1, 6, '2025-04-07', '14:00:00', 'approved', '2025-04-07 05:08:35'),
+(8, 10, 6, '2025-04-07', '14:30:00', 'approved', '2025-04-07 05:20:13'),
+(9, 10, 3, '2025-04-07', '14:00:00', 'approved', '2025-04-07 05:22:26'),
+(10, 1, 2, '2025-04-07', '14:00:00', 'cancelled', '2025-04-07 05:27:53'),
+(12, 10, 2, '2025-04-08', '10:00:00', 'approved', '2025-04-07 05:35:56'),
+(14, 10, 3, '2025-04-08', '09:00:00', 'pending', '2025-04-07 08:32:16'),
+(15, 10, 1, '2025-04-08', '10:00:00', 'pending', '2025-04-08 02:05:30'),
+(20, 10, 6, '2025-04-08', '02:00:00', 'pending', '2025-04-08 02:41:32'),
+(28, 10, 6, '2025-04-21', '12:00:00', 'approved', '2025-04-08 06:38:10'),
+(33, 11, 1, '2025-04-08', '14:00:00', 'pending', '2025-04-09 01:33:39'),
+(34, 11, 5, '2025-04-21', '14:00:00', 'pending', '2025-04-09 01:36:33'),
+(35, 11, 3, '2025-04-17', '09:00:00', 'approved', '2025-04-09 02:19:28');
 
 -- --------------------------------------------------------
 
@@ -103,7 +116,10 @@ INSERT INTO `chat_messages` (`id`, `sender_id`, `receiver_id`, `message`, `times
 (14, 5, 10, 'Yes? Any question?', '2025-03-27 05:43:22', 'sent'),
 (15, 4, 10, 'Yes?', '2025-03-27 05:59:16', 'sent'),
 (16, 5, 1, 'Are you allergic to anything?', '2025-03-27 06:19:31', 'sent'),
-(17, 1, 5, 'No', '2025-03-27 06:20:10', 'sent');
+(17, 1, 5, 'No', '2025-03-27 06:20:10', 'sent'),
+(18, 1, 9, 'hi', '2025-03-28 05:10:01', 'sent'),
+(19, 10, 9, 'Testtt', '2025-04-07 05:42:28', 'sent'),
+(20, 11, 6, 'Good Evening Doctor William.', '2025-04-09 06:21:27', 'sent');
 
 -- --------------------------------------------------------
 
@@ -204,7 +220,10 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `is_read`, `created_at`
 (1, 1, 'Your appointment has been approved by the doctor.', 0, '2025-03-21 06:00:59'),
 (2, 1, 'Your appointment has been approved by the doctor.', 0, '2025-03-21 06:01:13'),
 (3, 1, 'Your appointment has been approved by the doctor.', 0, '2025-03-21 06:02:03'),
-(4, 1, 'Your appointment has been approved by the doctor.', 0, '2025-03-23 04:39:11');
+(4, 1, 'Your appointment has been approved by the doctor.', 0, '2025-03-23 04:39:11'),
+(5, 10, 'Your appointment has been approved by the doctor.', 0, '2025-04-07 05:39:45'),
+(6, 10, 'Your appointment has been approved by the doctor.', 0, '2025-04-08 06:39:21'),
+(7, 11, 'Your appointment has been approved by the doctor.', 0, '2025-04-09 03:01:34');
 
 -- --------------------------------------------------------
 
@@ -227,6 +246,35 @@ CREATE TABLE `password_resets` (
 INSERT INTO `password_resets` (`id`, `email`, `token`, `expires_at`, `created_at`) VALUES
 (1, 'test@mail.com', '266bebd7ecbd0c9e0af9ffacf78f04e384ffbff1cfbfff1fccd19e1f2b07bcb8', '2025-03-24 03:49:11', '2025-03-24 01:49:11'),
 (2, 'test@mail.com', '149b6b68319a66810070261fc9ccd51603c2d0434540132b00b06bf9ae43cfc3', '2025-03-24 03:50:35', '2025-03-24 01:50:35');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `unavailable_slots`
+--
+
+CREATE TABLE `unavailable_slots` (
+  `id` int(11) NOT NULL,
+  `doctor_id` int(11) NOT NULL,
+  `date` date NOT NULL,
+  `from_time` time NOT NULL,
+  `to_time` time NOT NULL,
+  `reason` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `unavailable_slots`
+--
+
+INSERT INTO `unavailable_slots` (`id`, `doctor_id`, `date`, `from_time`, `to_time`, `reason`) VALUES
+(4, 9, '2025-04-08', '15:00:00', '16:00:00', NULL),
+(5, 9, '2025-04-21', '10:00:00', '12:00:00', NULL),
+(6, 5, '2025-04-16', '12:00:00', '16:00:00', NULL),
+(8, 7, '2025-04-21', '14:00:00', '15:00:00', NULL),
+(9, 5, '2025-04-22', '14:00:00', '15:00:00', NULL),
+(10, 3, '2025-04-17', '12:00:00', '15:00:00', NULL),
+(11, 3, '2025-04-30', '08:00:00', '20:00:00', NULL),
+(12, 6, '2025-04-10', '13:00:00', '17:00:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -255,7 +303,8 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VA
 (6, 'William', 'william@mail.com', '$2y$10$z2mZnS3MYHMeWvqlAKfaxuFs64mI4I/OaLEkdwZfWXVJdhyykhrAe', 'doctor', '2025-03-23 04:19:10'),
 (7, 'John', 'john@mail.com', '$2y$10$YJ1RbdKUP8cWdFVxfNotX.8ipKk1ZmiGnw3a/sUzsbK7CbaG8S.8u', 'doctor', '2025-03-23 04:20:43'),
 (9, 'hy', 'huiyingsyzz@gmail.com', '$2y$10$daYSjqmIpUvcNBUDDujSGuQlnQ1iLvYRS2Xyry48rrYTtQtPf1lw.', 'doctor', '2025-03-24 02:08:26'),
-(10, 'tulips', 'tulips@gmail.com', '$2y$10$8CnpMBHKGMHpv8.VCa7BCueCSYj/l6lZallL6jhxzezRxlWDh.Ckq', 'patient', '2025-03-27 01:50:15');
+(10, 'tulips', 'tulips@gmail.com', '$2y$10$8CnpMBHKGMHpv8.VCa7BCueCSYj/l6lZallL6jhxzezRxlWDh.Ckq', 'patient', '2025-03-27 01:50:15'),
+(11, 'Jellyfish', 'jellyfish@mail.com', '$2y$10$OCXAkoldnLfFOtbIJ0KRju/M4q1ymSz6dx2NY57HZkjf7lbOMQQY.', 'patient', '2025-04-09 01:14:45');
 
 -- --------------------------------------------------------
 
@@ -294,7 +343,19 @@ INSERT INTO `user_logs` (`id`, `admin_id`, `action`, `timestamp`) VALUES
 (17, 1, 'Admin logged in: System Administrator', '2025-03-25 00:57:17'),
 (18, 1, 'Admin logged in: System Administrator', '2025-03-25 01:07:16'),
 (19, 1, 'Admin logged in: System Administrator', '2025-03-25 03:13:14'),
-(20, 1, 'Admin logged in: System Administrator', '2025-03-25 03:14:24');
+(20, 1, 'Admin logged in: System Administrator', '2025-03-25 03:14:24'),
+(21, 1, 'Admin logged in: System Administrator', '2025-03-28 05:35:50'),
+(22, 1, 'Admin logged in: System Administrator', '2025-04-03 00:55:48'),
+(23, 1, 'Admin logged in: System Administrator', '2025-04-03 01:07:09'),
+(24, 1, 'Admin logged in: System Administrator', '2025-04-07 05:36:17'),
+(25, 1, 'Updated appointment ID: 12 to status: approved', '2025-04-07 05:37:05'),
+(26, 1, 'Updated appointment ID: 7 to status: approved', '2025-04-07 05:37:13'),
+(27, 1, 'Updated appointment ID: 9 to status: approved', '2025-04-07 05:37:22'),
+(28, 1, 'Updated appointment ID: 10 to status: cancelled', '2025-04-07 05:37:37'),
+(29, 1, 'Admin logged in: System Administrator', '2025-04-09 03:32:59'),
+(30, 1, 'Admin logged in: System Administrator', '2025-04-09 03:46:21'),
+(31, 1, 'Admin logged in: System Administrator', '2025-04-09 06:15:17'),
+(32, 1, 'Admin logged in: System Administrator', '2025-04-09 06:30:33');
 
 --
 -- Indexes for dumped tables
@@ -313,8 +374,8 @@ ALTER TABLE `admin`
 --
 ALTER TABLE `appointments`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `patient_id` (`patient_id`),
-  ADD KEY `doctor_id` (`doctor_id`);
+  ADD UNIQUE KEY `unique_doctor_time` (`doctor_id`,`appointment_date`,`appointment_time`),
+  ADD KEY `patient_id` (`patient_id`);
 
 --
 -- Indexes for table `chat_messages`
@@ -359,6 +420,12 @@ ALTER TABLE `password_resets`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `unavailable_slots`
+--
+ALTER TABLE `unavailable_slots`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -386,13 +453,13 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `chat_messages`
 --
 ALTER TABLE `chat_messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `doctors`
@@ -416,7 +483,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `password_resets`
@@ -425,16 +492,22 @@ ALTER TABLE `password_resets`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT for table `unavailable_slots`
+--
+ALTER TABLE `unavailable_slots`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `user_logs`
 --
 ALTER TABLE `user_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- Constraints for dumped tables

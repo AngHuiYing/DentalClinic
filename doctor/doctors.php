@@ -251,7 +251,7 @@ $result = $stmt->get_result();
                         <?php if (isset($_SESSION['user_id'])): ?>
                             <a href="appointment.php?doctor=<?= $doctor['id'] ?>" class="btn btn-success">Book</a>
                         <?php else: ?>
-                            <a href="login.php" class="btn btn-secondary">Login to Book</a>
+                            <a href="../patient/login.php" class="btn btn-secondary">Login to Book</a>
                         <?php endif; ?>
                     </div>
                 </div>

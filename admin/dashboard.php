@@ -1,5 +1,6 @@
 <?php
 session_start();
+include '../includes/db.php';
 
 // 检查管理员是否登录
 if (!isset($_SESSION['admin_id']) || !isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
@@ -52,6 +53,16 @@ $admin_name = $_SESSION['admin_name'];
                     <h5 class="card-title">Manage Appointments</h5>
                     <p class="card-text">View and manage all appointments.</p>
                     <a href="./manage_appointments.php" class="btn btn-primary">Manage</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Doctor's Booking Time</h5>
+                    <p class="card-text">Manage doctors booking time.</p>
+                    <a href="./admin_set_unavailable.php" class="btn btn-primary">Manage</a>
                 </div>
             </div>
         </div>

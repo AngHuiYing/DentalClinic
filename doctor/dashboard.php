@@ -89,6 +89,7 @@ $appointments = $stmt->get_result();
             </div>
         </div>
 
+        <!-- 将“Booking Time”放在新的col-md-4列 -->
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
@@ -99,44 +100,62 @@ $appointments = $stmt->get_result();
             </div>
         </div>
 
+        <!-- 将“Booking Time”排在下一行 -->
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                <h5 class="card-title">My Profile</h5>
-                <p class="card-text">View and update your profile.</p>
-                <a href="doctor_profile.php" class="btn btn-primary">View Profile</a>
+                    <h5 class="card-title">My Profile</h5>
+                    <p class="card-text">View and update your profile.</p>
+                    <a href="doctor_profile.php" class="btn btn-primary">View Profile</a>
+                </div>
             </div>
         </div>
-</div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Booking Time</h5>
+                    <p class="card-text">Manage your booking time.</p>
+                    <a href="doctor_setunavailable.php" class="btn btn-primary">Manage</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     </div>
 
-    <h3 class="mt-5">Your Upcoming Appointments</h3>
+    <h3 class="mt-5 text-center">Your Upcoming Appointments</h3>
 
-    <?php if ($appointments->num_rows > 0) { ?>  
-        <table class="table table-bordered">
-            <tr>
-                <th>Patient</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-            <?php while ($row = $appointments->fetch_assoc()) { ?>
-                <tr>
-                    <td><?= htmlspecialchars($row['patient']); ?></td>
-                    <td><?= htmlspecialchars($row['appointment_date']); ?></td>
-                    <td><?= htmlspecialchars($row['appointment_time']); ?></td>
-                    <td><?= htmlspecialchars($row['status']); ?></td>
-                    <td>
-                        <a href="patient_history.php?patient_id=<?= htmlspecialchars($row['patient_id']); ?>" class="btn btn-info">View Patient History</a>
-                    </td>
-                </tr>
-            <?php } ?>
-        </table>
-    <?php } else { ?>
-        <p class="text-muted">No upcoming appointments.</p>
-    <?php } ?>
+<?php if ($appointments->num_rows > 0) { ?>  
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-bordered" style="max-width: 70%; margin: 20px auto;">
+                    <tr>
+                        <th>Patient</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    <?php while ($row = $appointments->fetch_assoc()) { ?>
+                        <tr>
+                            <td><?= htmlspecialchars($row['patient']); ?></td>
+                            <td><?= htmlspecialchars($row['appointment_date']); ?></td>
+                            <td><?= htmlspecialchars($row['appointment_time']); ?></td>
+                            <td><?= htmlspecialchars($row['status']); ?></td>
+                            <td>
+                                <a href="patient_history.php?patient_id=<?= htmlspecialchars($row['patient_id']); ?>" class="btn btn-info">View Patient History</a>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </table>
+            </div>
+        </div>
+    </div>
+<?php } else { ?>
+    <p class="text-muted">No upcoming appointments.</p>
+<?php } ?>
 
 </div>
 </body>

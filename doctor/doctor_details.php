@@ -176,7 +176,7 @@ if (isset($_SESSION['user_id'])) {
 
         <div class="btn-container">
             <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="../book_appointment.php?doctor=<?= $doctor['id'] ?>" class="btn">Book Appointment</a>
+                <a href="../patient/book_appointment.php?doctor=<?= $doctor['id'] ?>" class="btn">Book Appointment</a>
             <?php else: ?>
                 <a href="../patient/login.php" class="btn btn-secondary">Login to Book</a>
             <?php endif; ?>

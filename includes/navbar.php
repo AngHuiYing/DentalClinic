@@ -125,6 +125,7 @@ $current_url = $_SERVER['PHP_SELF'];
                 <li><a href="/Hospital_Management_System/admin/manage_users.php" <?php echo (strpos($current_url, 'manage_users.php') !== false) ? 'class="active"' : ''; ?>>Manage Users</a></li>
                 <li><a href="/Hospital_Management_System/admin/manage_doctors.php" <?php echo (strpos($current_url, 'manage_doctors.php') !== false) ? 'class="active"' : ''; ?>>Manage Doctor Profile</a></li>
                 <li><a href="/Hospital_Management_System/admin/manage_appointments.php" <?php echo (strpos($current_url, 'manage_appointments.php') !== false) ? 'class="active"' : ''; ?>>Manage Appointments</a></li>
+                <li><a href="/Hospital_Management_System/admin/admin_set_unavailable.php" <?php echo (strpos($current_url, 'admin_set_unavailable.php') !== false) ? 'class="active"' : ''; ?>>Manage Doctors Booking Time</a></li>
                 <li><a href="/Hospital_Management_System/admin/messages.php" <?php echo (strpos($current_url, 'messages.php') !== false) ? 'class="active"' : ''; ?>>Message from Users</a></li>
                 <li><a href="/Hospital_Management_System/admin/system_logs.php" <?php echo (strpos($current_url, 'system_logs.php') !== false) ? 'class="active"' : ''; ?>>System Logs</a></li>
                 <li><a href="/Hospital_Management_System/admin/logout.php">Logout</a></li>
@@ -137,6 +138,7 @@ $current_url = $_SERVER['PHP_SELF'];
                 <li><a href="/Hospital_Management_System/doctor/messages.php">Message from Users</a></li>
                 <li><a href="/Hospital_Management_System/doctor/chat_system.php">Chat with Patient</a></li>
                 <li><a href="/Hospital_Management_System/doctor/doctor_profile.php">My Profile</a></li>
+                <li><a href="/Hospital_Management_System/doctor/doctor_setunavailable.php">Manage Booking Time</a></li>
                 <li><a href="/Hospital_Management_System/doctor/logout.php">Logout</a></li>
             <?php } elseif (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'patient') { ?>
                 <!-- 病人导航菜单 -->

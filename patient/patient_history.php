@@ -3,7 +3,7 @@ session_start();
 include '../includes/db.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'patient') {
-    header("Location: ../login.php");
+    header("Location: ../patient/login.php");
     exit;
 }
 
