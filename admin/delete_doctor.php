@@ -30,8 +30,8 @@ if ($result->num_rows == 0) {
 $doctor = $result->fetch_assoc();
 
 // 删除头像文件（如果存在）
-if (!empty($doctor['image']) && file_exists($doctor['image'])) {
-    unlink($doctor['image']);
+if (!empty($doctor['image']) && file_exists("../" . $doctor['image'])) {
+    unlink("../" . $doctor['image']);
 }
 
 // 删除医生记录

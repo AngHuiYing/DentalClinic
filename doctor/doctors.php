@@ -2,25 +2,22 @@
 session_start();
 include "../db.php"; // 连接数据库
 
-$dept = isset($_GET['dept']) ? $_GET['dept'] : '';
 $search = isset($_GET['search']) ? '%' . $_GET['search'] . '%' : '%';
 
-// 获取该科室的医生（支持搜索）
-$sql = "SELECT * FROM doctors WHERE department = ? AND (name LIKE ? OR specialty LIKE ?)";
+// 获取所有医生（支持搜索，不再检查 department）
+$sql = "SELECT * FROM doctors WHERE name LIKE ? OR specialty LIKE ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("sss", $dept, $search, $search);
+$stmt->bind_param("ss", $search, $search);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= ucfirst($dept) ?> Department Doctors</title>
+    <title>Dentists</title>
     <style>
-        /* 页面样式 */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f6f9;
@@ -28,7 +25,7 @@ $result = $stmt->get_result();
             padding: 0;
         }
 
-        /* 导航栏 */
+        /* ===== Navbar ===== */
         .navbar {
             background: #005a8d;
             padding: 15px;
@@ -45,6 +42,12 @@ $result = $stmt->get_result();
         .navbar .logo {
             font-size: 20px;
             font-weight: bold;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 26px;
+            cursor: pointer;
         }
 
         .navbar nav ul {
@@ -69,7 +72,7 @@ $result = $stmt->get_result();
             color: #ffd700;
         }
 
-        /* 容器 */
+        /* ===== Container ===== */
         .container {
             max-width: 1000px;
             margin: 80px auto 20px;
@@ -149,56 +152,30 @@ $result = $stmt->get_result();
             flex: 1;
         }
 
-        /* 按钮 */
         .button-group {
             display: flex;
+            flex-direction: column;
             gap: 10px;
-            margin-top: 10px;
+            margin-left: 10px;
         }
 
         .btn {
-            display: inline-block;
             padding: 10px 15px;
             border-radius: 5px;
             text-decoration: none;
             font-size: 14px;
             text-align: center;
-            transition: background 0.3s, transform 0.2s;
-            cursor: pointer;
             font-weight: bold;
+            cursor: pointer;
         }
 
-        .btn-primary {
-            background: #007bff;
-            color: white;
-        }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-primary:hover { background: #0056b3; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+        .btn-secondary { background: #e74c3c; color: white; }
+        .btn-secondary:hover { background: #c0392b; }
 
-        .btn-primary:hover {
-            background: #0056b3;
-            transform: scale(1.05);
-        }
-
-        .btn-success {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #218838;
-            transform: scale(1.05);
-        }
-
-        .btn-secondary {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #c0392b;
-            transform: scale(1.05);
-        }
-
-        /* 无医生提示 */
         .no-doctors {
             text-align: center;
             color: #777;
@@ -206,12 +183,57 @@ $result = $stmt->get_result();
             font-weight: bold;
             padding: 50px;
         }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            .navbar nav ul {
+                display: none;
+                flex-direction: column;
+                background: #fff;
+                position: absolute;
+                top: 60px;
+                right: 10px;
+                width: 200px;
+                border-radius: 8px;
+                box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+            }
+            .navbar nav ul.show {
+                display: flex;
+            }
+            .navbar nav ul li {
+                margin: 10px;
+            }
+            .navbar nav ul li a {
+                color: #333;
+            }
+
+            .doctor-card {
+                flex-direction: column;
+                width: 100%;
+                text-align: center;
+            }
+            .doctor-card img {
+                margin: 0 auto 15px;
+            }
+            .button-group {
+                flex-direction: row;
+                justify-content: center;
+            }
+            .search-form input {
+                width: 90%;
+                margin-bottom: 10px;
+            }
+        }
     </style>
 </head>
 <body>
 
 <header class="navbar">
-    <div class="logo">🌿 Green Life Hospital</div>
+    <div class="logo">🌿 Green Life Dental Clinic</div>
+    <span class="menu-toggle">&#9776;</span>
     <nav>
         <ul>
             <li><a href="../index.php">Home</a></li>
@@ -224,12 +246,10 @@ $result = $stmt->get_result();
 </header>
 
 <div class="container">
-    <h2><?= ucfirst($dept) ?> Department Doctors</h2>
+    <h2>All Dentists</h2>
 
-    <!-- 搜索表单 -->
     <form method="GET" action="" class="search-form">
-        <input type="hidden" name="dept" value="<?= htmlspecialchars($dept) ?>">
-        <input type="text" name="search" placeholder="Search by name or specialty" 
+        <input type="text" name="search" placeholder="Search by name or specialty"
                value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
         <button type="submit">Search</button>
     </form>
@@ -245,13 +265,12 @@ $result = $stmt->get_result();
                         <p><strong>Experience:</strong> <?= htmlspecialchars($doctor['experience']) ?> years</p>
                         <p><strong>Location:</strong> <?= htmlspecialchars($doctor['location']) ?></p>
                     </div>
-                    
                     <div class="button-group">
                         <a href="doctor_details.php?id=<?= $doctor['id'] ?>" class="btn btn-primary">View Details</a>
                         <?php if (isset($_SESSION['user_id'])): ?>
                             <a href="appointment.php?doctor=<?= $doctor['id'] ?>" class="btn btn-success">Book</a>
                         <?php else: ?>
-                            <a href="../patient/login.php" class="btn btn-secondary">Login to Book</a>
+                            <a href="../book_appointment.php" class="btn btn-secondary">Book an appointment</a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -262,5 +281,14 @@ $result = $stmt->get_result();
     </div>
 </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const toggle = document.querySelector('.menu-toggle');
+    const navMenu = document.querySelector('.navbar nav ul');
+    toggle.addEventListener('click', () => {
+        navMenu.classList.toggle('show');
+    });
+});
+</script>
 </body>
 </html>

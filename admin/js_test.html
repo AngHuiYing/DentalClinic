@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JS Debug Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>JavaScript 和 Chart.js 測試</h1>
+    <canvas id="testChart" width="400" height="200"></canvas>
+    
+    <script>
+        console.log('=== JavaScript Debug Test ===');
+        console.log('Chart.js loaded:', typeof Chart !== 'undefined');
+        console.log('Canvas found:', !!document.getElementById('testChart'));
+        
+        // 測試簡單圖表
+        try {
+            const ctx = document.getElementById('testChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Sep 2025', 'Oct 2025'],
+                    datasets: [{
+                        label: 'Test Data',
+                        data: [3930, 7160],
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)'
+                    }]
+                }
+            });
+            console.log('✅ Test chart created successfully');
+        } catch (error) {
+            console.error('❌ Error creating test chart:', error);
+        }
+    </script>
+</body>
+</html>

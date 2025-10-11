@@ -1,6 +1,13 @@
 <?php
 session_start();
 include 'includes/db.php';
+
+// Helper function to check user role safely
+function isPatient() {
+    return isset($_SESSION['user_id']) && 
+           ((isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'patient') || 
+            (isset($_SESSION['role']) && $_SESSION['role'] === 'patient'));
+}
 ?>
 
 <!DOCTYPE html>
@@ -253,45 +260,134 @@ include 'includes/db.php';
     <section class="container mb-5">
         <h2 class="text-center mb-4" style="color: var(--primary-color);">Our Doctors</h2>
         <div class="row">
+            <?php
+            // Build search query
+            $search_conditions = [];
+            $params = [];
+            $types = "";
+            
+            if (!empty($_GET['specialty'])) {
+                $search_conditions[] = "d.specialty = ?";
+                $params[] = $_GET['specialty'];
+                $types .= "s";
+            }
+            
+            if (!empty($_GET['name'])) {
+                $search_conditions[] = "d.name LIKE ?";
+                $search_term = "%" . $_GET['name'] . "%";
+                $params[] = $search_term;
+                $types .= "s";
+            }
+            
+            $where_clause = !empty($search_conditions) ? "WHERE " . implode(" AND ", $search_conditions) : "";
+            
+            // Get doctors with their ratings
+            $doctors_query = "SELECT 
+                d.*,
+                COALESCE(AVG(dr.rating), 0) as avg_rating,
+                COUNT(dr.id) as review_count
+                FROM doctors d 
+                LEFT JOIN doctor_reviews dr ON d.id = dr.doctor_id AND dr.is_approved = 1
+                $where_clause
+                GROUP BY d.id
+                ORDER BY avg_rating DESC, review_count DESC";
+            
+            if (!empty($params)) {
+                $doctors_stmt = $conn->prepare($doctors_query);
+                if (!empty($types)) {
+                    $doctors_stmt->bind_param($types, ...$params);
+                }
+                $doctors_stmt->execute();
+                $doctors_result = $doctors_stmt->get_result();
+            } else {
+                $doctors_result = $conn->query($doctors_query);
+            }
+            
+            function renderStars($rating) {
+                $stars = '';
+                for ($i = 1; $i <= 5; $i++) {
+                    if ($i <= $rating) {
+                        $stars .= '<i class="bi bi-star-fill text-warning"></i>';
+                    } elseif ($i - 0.5 <= $rating) {
+                        $stars .= '<i class="bi bi-star-half text-warning"></i>';
+                    } else {
+                        $stars .= '<i class="bi bi-star text-muted"></i>';
+                    }
+                }
+                return $stars;
+            }
+            
+            if ($doctors_result->num_rows > 0):
+                while ($doctor = $doctors_result->fetch_assoc()):
+                    $avg_rating = round($doctor['avg_rating'], 1);
+                    $review_count = $doctor['review_count'];
+                    // 修复图片路径
+                    $profile_image = !empty($doctor['image']) ? $doctor['image'] : 'https://img.freepik.com/free-photo/woman-doctor-wearing-lab-coat-with-stethoscope-isolated_1303-29791.jpg';
+                    
+                    // 如果是数据库中的相对路径，检查文件是否存在
+                    if (!empty($doctor['image']) && !filter_var($doctor['image'], FILTER_VALIDATE_URL)) {
+                        if (!file_exists($doctor['image'])) {
+                            $profile_image = 'https://img.freepik.com/free-photo/woman-doctor-wearing-lab-coat-with-stethoscope-isolated_1303-29791.jpg';
+                        }
+                    }
+            ?>
             <div class="col-lg-3 col-md-6">
                 <div class="doctor-card">
                     <div class="doctor-image">
-                        <img src="https://img.freepik.com/free-photo/woman-doctor-wearing-lab-coat-with-stethoscope-isolated_1303-29791.jpg" 
-                             alt="Dr. Sarah Lee"
-                             class="img-fluid rounded-circle mb-3">
+                        <img src="<?php echo htmlspecialchars($profile_image); ?>" 
+                             alt="Dr. <?php echo htmlspecialchars($doctor['name']); ?>"
+                             class="img-fluid rounded-circle mb-3"
+                             onerror="this.src='https://img.freepik.com/free-photo/woman-doctor-wearing-lab-coat-with-stethoscope-isolated_1303-29791.jpg'">
                     </div>
-                    <h4>Dr. Sarah Lee</h4>
-                    <p class="specialty">General Practitioner</p>
-                    <p class="description">Specializes in family medicine with over 10 years of experience in primary care.</p>
-                    <a href="../Clinic_Appointment_System/patient/login.php" class="btn-book">Book Appointment</a>
+                    <h4>Dr. <?php echo htmlspecialchars($doctor['name']); ?></h4>
+                    <p class="specialty"><?php echo htmlspecialchars($doctor['specialty']); ?></p>
+                    
+                    <!-- Rating Display -->
+                    <div class="rating-display mb-3">
+                        <div class="stars">
+                            <?php echo renderStars($avg_rating); ?>
+                        </div>
+                        <div class="rating-text">
+                            <?php if ($review_count > 0): ?>
+                                <span class="text-muted small">
+                                    <?php echo $avg_rating; ?>/5 (<?php echo $review_count; ?> review<?php echo $review_count != 1 ? 's' : ''; ?>)
+                                </span>
+                            <?php else: ?>
+                                <span class="text-muted small">No reviews yet</span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    
+                    <?php if (!empty($doctor['bio'])): ?>
+                    <p class="description"><?php echo htmlspecialchars(substr($doctor['bio'], 0, 100) . (strlen($doctor['bio']) > 100 ? '...' : '')); ?></p>
+                    <?php else: ?>
+                    <p class="description">Experienced healthcare professional dedicated to providing quality care.</p>
+                    <?php endif; ?>
+                    
+                    <div class="doctor-actions">
+                        <?php if (isPatient()): ?>
+                            <a href="patient/book_appointment.php?doctor_id=<?php echo $doctor['id']; ?>" class="btn-book me-2">Book Appointment</a>
+                        <?php else: ?>
+                            <a href="patient/login.php" class="btn-book me-2">Book Appointment</a>
+                        <?php endif; ?>
+                        <a href="doctor_reviews.php?doctor_id=<?php echo $doctor['id']; ?>" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-star me-1"></i>Reviews
+                        </a>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="doctor-card">
-                    <div class="doctor-image">
-                        <img src="https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg" 
-                             alt="Dr. David Chen"
-                             class="img-fluid rounded-circle mb-3">
-                    </div>
-                    <h4>Dr. David Chen</h4>
-                    <p class="specialty">Internal Medicine</p>
-                    <p class="description">Expert in chronic disease management and preventive medicine.</p>
-                    <a href="../Clinic_Appointment_System/patient/login.php" class="btn-book">Book Appointment</a>
+            <?php 
+                endwhile;
+            else:
+            ?>
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="bi bi-search display-1 text-muted"></i>
+                    <h4 class="mt-3 text-muted">No doctors found</h4>
+                    <p class="text-muted">Try adjusting your search criteria</p>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="doctor-card">
-                    <div class="doctor-image">
-                        <img src="https://img.freepik.com/free-photo/female-doctor-hospital-with-stethoscope_23-2148827776.jpg" 
-                             alt="Dr. Emily Wong"
-                             class="img-fluid rounded-circle mb-3">
-                    </div>
-                    <h4>Dr. Emily Wong</h4>
-                    <p class="specialty">Pediatrician</p>
-                    <p class="description">Dedicated to providing comprehensive care for children and adolescents.</p>
-                    <a href="../Clinic_Appointment_System/patient/login.php" class="btn-book">Book Appointment</a>
-                </div>
-            </div>
+            <?php endif; ?>
         </div>
     </section>
 

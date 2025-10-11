@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
         $stmt->execute();
 
         // 发送重置邮件
-        $reset_link = "http://localhost/Hospital_Management_System/patient/reset_password.php?token=" . $token;
+        $reset_link = "http://localhost/Dental_Clinic/patient/reset_password.php?token=" . $token;
 
         $mail = new PHPMailer(true);
         try {
@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
             $mail->Port = 587;
 
             // 发件人和收件人
-            $mail->setFrom('huiyingsyzz@gmail.com', 'Hospital Management System');
+            $mail->setFrom('huiyingsyzz@gmail.com', 'Green Life Dental Clinic');
             $mail->addAddress($email);
 
             // 邮件内容
@@ -70,32 +70,195 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password - Health Care Clinic</title>
+    <title>Forgot Password - Green Life Dental Clinic</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .forgot-container {
+            max-width: 400px;
+            margin: 0 auto;
+            margin-top: 10vh;
+        }
+
+        .forgot-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #2563eb, #059669);
+            color: white;
+            text-align: center;
+            padding: 2.5rem 2rem;
+        }
+
+        .card-header i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-control {
+            height: 3rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            outline: none;
+        }
+
+        .btn-primary {
+            width: 100%;
+            height: 3rem;
+            background: linear-gradient(135deg, #2563eb, #059669);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .back-link:hover {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .alert {
+            border: none;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-danger {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        @media (max-width: 576px) {
+            .forgot-container {
+                margin-top: 5vh;
+            }
+            
+            .card-header {
+                padding: 2rem 1.5rem;
+            }
+            
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .card-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .card-header i {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
-<body class="d-flex align-items-center min-vh-100 py-5">
-    <div class="container">
-        <div class="login-container">
-            <div class="card shadow-lg">
-                <div class="card-body p-5">
-                    <h2 class="text-center">Forgot Password</h2>
-                    <p class="text-center text-muted">Enter your email to reset your password.</p>
+<body>
+    <div class="forgot-container">
+        <div class="forgot-card">
+            <div class="card-header">
+                <i class="fas fa-key"></i>
+                <h2>Forgot Password</h2>
+                <p>Enter your email to reset your password</p>
+            </div>
+            
+            <div class="card-body">
+                <?php echo $message; ?>
 
-                    <?php echo $message; ?>
-
-                    <form method="POST" action="">
-                        <div class="mb-3">
-                            <label class="form-label">Email Address</label>
-                            <input type="email" name="email" class="form-control" required placeholder="Enter your email">
-                        </div>
-                        <button type="submit" name="submit" class="btn btn-primary w-100">
-                            Send Reset Link
-                        </button>
-                    </form>
-
-                    <div class="text-center mt-3">
-                        <a href="login.php" class="text-decoration-none">Back to Login</a>
+                <form method="POST" action="">
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope me-2"></i>Email Address
+                        </label>
+                        <input type="email" name="email" id="email" class="form-control" 
+                               placeholder="Enter your email address" required>
                     </div>
+
+                    <button type="submit" name="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-2"></i>
+                        Send Reset Link
+                    </button>
+                </form>
+
+                <div class="text-center">
+                    <a href="login.php" class="back-link">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Login
+                    </a>
                 </div>
             </div>
         </div>

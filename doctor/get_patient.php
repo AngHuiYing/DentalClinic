@@ -17,7 +17,7 @@ $sql = "
     SELECT DISTINCT u.id, u.name
     FROM users u
     JOIN appointments a ON u.id = a.patient_id
-    WHERE a.doctor_id = ? AND a.status = 'approved'
+    WHERE a.doctor_id = ? AND a.status = 'confirmed'
     AND u.role = 'patient'
 ";
 
