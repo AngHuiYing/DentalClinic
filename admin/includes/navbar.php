@@ -283,17 +283,19 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
         .user-profile {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             background: rgba(255, 255, 255, 0.1);
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 50px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 269px;
+            height: 62px;
         }
 
         .user-avatar {
-            width: 36px;
-            height: 36px;
+            width: 26px !important;
+            height: 26px !important;
             background: var(--white);
             color: var(--primary-color);
             border-radius: 50%;
@@ -301,13 +303,14 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 11px;
+            flex-shrink: 0;
         }
 
         .user-info {
             display: flex;
             flex-direction: column;
-            line-height: 1.2;
+            line-height: 1.3;
         }
 
         .user-name {
@@ -318,24 +321,28 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
 
         .user-role {
             color: rgba(255, 255, 255, 0.8);
-            font-size: 11px;
+            font-size: 10px;
         }
 
         .logout-btn {
             background: var(--danger-color);
             color: var(--white);
             border: none;
-            padding: 8px 16px;
+            padding: 6px 10px;
             border-radius: var(--border-radius);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
             cursor: pointer;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             transition: var(--transition);
             margin-left: 8px;
+        }
+
+        .logout-btn i {
+            font-size: 10px;
         }
 
         .logout-btn:hover {
@@ -436,8 +443,8 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
             }
 
             .user-profile {
-                padding: 6px 12px;
-                gap: 8px;
+                padding: 8px 16px;
+                gap: 12px;
             }
 
             .main-content {
@@ -461,9 +468,9 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
             }
 
             .user-avatar {
-                width: 32px;
-                height: 32px;
-                font-size: 12px;
+                width: 28px !important;
+                height: 28px !important;
+                font-size: 11px;
             }
 
             .logout-btn {

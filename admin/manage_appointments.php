@@ -265,115 +265,6 @@ $appointments = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
-    <!-- /* Page-specific styles for manage appointments */
-    .appointment-card {
-        transition: all 0.3s ease;
-        border: 1px solid var(--gray-200);
-    }
-
-    .appointment-card:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
-    }
-
-    .status-badge {
-        padding: 0.375rem 0.75rem;
-        border-radius: 50px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .status-confirmed {
-        background: rgba(16, 185, 129, 0.1);
-        color: #047857;
-        border: 1px solid rgba(16, 185, 129, 0.2);
-    }
-
-    .status-pending {
-        background: rgba(245, 158, 11, 0.1);
-        color: #d97706;
-        border: 1px solid rgba(245, 158, 11, 0.2);
-    }
-
-    .status-cancelled {
-        background: rgba(239, 68, 68, 0.1);
-        color: #dc2626;
-        border: 1px solid rgba(239, 68, 68, 0.2);
-    }
-
-    .filter-form {
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: var(--border-radius-lg);
-        padding: 1.5rem;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        margin-top: 1rem;
-    }
-
-    .filter-form .form-control,
-    .filter-form .form-select {
-        background: rgba(255, 255, 255, 0.9);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: var(--border-radius);
-        padding: 0.75rem 1rem;
-        color: var(--gray-800);
-    }
-
-    .filter-form .form-control:focus,
-    .filter-form .form-select:focus {
-        background: white;
-        border-color: rgba(255, 255, 255, 0.8);
-        box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
-        outline: none;
-    }
-
-    .table-container {
-        border-radius: var(--border-radius-xl);
-        overflow: hidden;
-        box-shadow: var(--shadow-md);
-        border: 1px solid var(--gray-200);
-    }
-
-    .table th {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-        color: white;
-        padding: 1rem;
-        font-weight: 600;
-        font-size: 0.9rem;
-        text-align: left;
-        border: none;
-    }
-
-    .table td {
-        padding: 1rem;
-        border-bottom: 1px solid var(--gray-100);
-        vertical-align: middle;
-        font-size: 0.9rem;
-    }
-
-    .table tbody tr:hover {
-        background: rgba(79, 70, 229, 0.05);
-    }
-
-    .table tbody tr:last-child td {
-        border-bottom: none;
-    }
-
-    /* Responsive design */
-    @media (max-width: 768px) {
-        .table-container {
-            overflow-x: auto;
-        }
-
-        .table {
-            min-width: 800px;
-        }
-    }
-?> -->
-
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -879,6 +770,45 @@ $appointments = $stmt->get_result();
             border-color: #0369a1;
         }
 
+        /* Custom User Profile for Manage Appointments Page */
+        .user-profile {
+            max-width: 269px !important;
+            height: 62px !important;
+            padding: 6px 12px !important;
+            gap: 10px !important;
+        }
+
+        .user-avatar {
+            width: 26px !important;
+            height: 26px !important;
+            font-size: 11px !important;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            line-height: 1.3 !important;
+        }
+
+        .user-name {
+            font-size: 13px !important;
+            font-weight: 600 !important;
+        }
+
+        .user-role {
+            font-size: 10px !important;
+            opacity: 0.85;
+        }
+
+        .logout-btn {
+            padding: 6px 10px !important;
+            font-size: 11px !important;
+            gap: 4px !important;
+        }
+
+        .logout-btn i {
+            font-size: 10px !important;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .main-container {
@@ -936,151 +866,9 @@ $appointments = $stmt->get_result();
 
 <body>
     <?php include 'includes/navbar.php'; ?>
-    <!-- Simple Header -->
-    <!-- <div class="simple-header">
-        <div class="header-content">
-            <div class="header-brand">
-                <i class="fas fa-tooth" style="font-size: 2rem;"></i>
-                <div>
-                    <h4 style="margin: 0; font-weight: 700;">Green Life Dental</h4>
-                    <small style="opacity: 0.8;">Admin Dashboard</small>
-                </div>
-            </div>
-            
-            <div class="header-user">
-                <div class="user-info">
-                    <strong><?php echo htmlspecialchars($_SESSION['admin_name'] ?? 'Administrator'); ?></strong>
-                    <small style="display: block; opacity: 0.8;">Administrator</small>
-                </div>
-                <a href="logout.php" class="logout-btn">
-                    <i class="fas fa-sign-out-alt me-1"></i>
-                    Logout
-                </a>
-            </div>
-        </div>
-    </div> -->
 
     <!-- Main Content Container -->
     <div class="main-container">
-        <!-- Header Section -->
-        <!-- <div class="header-section">
-            <div class="welcome-text">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="me-3">
-                        <i class="fas fa-calendar-check" style="font-size: 3rem;"></i>
-                    </div>
-                    <div>
-                        <h1 class="mb-2">📋 Manage All Appointments</h1>
-                        <p class="mb-0 opacity-75">View, filter, and manage all dental clinic appointments efficiently</p>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-
-        <!-- Dashboard Content -->
-        <!--<div class="dashboard-cards"> -->
-            <!-- Header Actions -->
-            <!-- <div class="glass-card fade-in">
-                <div class="header-actions">
-                    <h2 class="section-title">
-                        <i class="fas fa-calendar-check"></i>
-                        Appointment Management
-                    </h2>
-                    <a href="add_appointment.php" class="btn btn-success">
-                        <i class="fas fa-plus"></i>
-                        Add New Appointment
-                    </a>
-                </div>
-            </div> -->
-
-        <!-- Advanced Search Section -->
-        <!--<div class="glass-card slide-in">
-            <div class="section-header">
-                <div class="section-icon">
-                    <i class="fas fa-search"></i>
-                </div>
-                <h3 class="section-title">🔍 Advanced Search & Filters</h3>
-            </div>
-            <form method="GET">
-                <div class="input-group">
-                    <input type="text" name="search" class="form-control" 
-                           placeholder="Search by Patient Name, Doctor, or Appointment Status..." 
-                           value="<?= htmlspecialchars($search) ?>">
-                    
-                    <select name="date_filter" class="form-select" style="max-width: 200px;">
-                        <option value="">📅 All Dates</option>
-                        <option value="today" <?= $date_filter === 'today' ? 'selected' : '' ?>>📍 Today</option>
-                        <option value="tomorrow" <?= $date_filter === 'tomorrow' ? 'selected' : '' ?>>⏭️ Tomorrow</option>
-                        <option value="this_week" <?= $date_filter === 'this_week' ? 'selected' : '' ?>>📅 This Week</option>
-                        <option value="this_month" <?= $date_filter === 'this_month' ? 'selected' : '' ?>>📆 This Month</option>
-                        <option value="upcoming" <?= $date_filter === 'upcoming' ? 'selected' : '' ?>>🔮 Upcoming</option>
-                        <option value="past" <?= $date_filter === 'past' ? 'selected' : '' ?>>📋 Past</option>
-                    </select>
-                    
-                    <input type="date" name="custom_date" class="form-control" 
-                           placeholder="Custom Date" 
-                           value="<?= !empty($date_filter) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $date_filter) ? htmlspecialchars($date_filter) : '' ?>"
-                           style="max-width: 160px;"
-                           onchange="if(this.value) { document.querySelector('select[name=\"date_filter\"]').value = this.value; }">
-                    
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-search"></i>
-                        Search
-                    </button>
-                    <a href="manage_appointments.php" class="btn btn-secondary">
-                        <i class="fas fa-refresh"></i>
-                        Reset
-                    </a>
-                </div>
-            </form>
-        </div> -->
-
-    <?php
-$search = isset($_GET['search']) ? trim($_GET['search']) : "";
-$date_filter = isset($_GET['date_filter']) ? trim($_GET['date_filter']) : '';
-
-$today_conditions = ["a.appointment_date = CURDATE()"];
-$today_params = [];
-$today_param_types = '';
-
-if (!empty($search)) {
-    $today_conditions[] = "(p.name LIKE ? OR a.patient_name LIKE ? OR d.name LIKE ? OR a.status LIKE ?)";
-    $today_params[] = "%$search%";
-    $today_params[] = "%$search%";
-    $today_params[] = "%$search%";
-    $today_params[] = "%$search%";
-    $today_param_types .= 'ssss';
-}
-
-$today_sql = "
-    SELECT a.id, 
-           COALESCE(p.name, a.patient_name, '-') AS patient,
-           COALESCE(a.patient_phone, p.phone, '-') AS patient_phone,
-           COALESCE(a.patient_email, p.email, '-') AS final_email,
-           d.name AS doctor, 
-           a.appointment_date, 
-           a.appointment_time, 
-           a.status, 
-           a.created_at,
-           a.message
-    FROM appointments a
-    LEFT JOIN users p ON a.patient_id = p.id AND p.role = 'patient'
-    LEFT JOIN doctors d ON a.doctor_id = d.id
-    WHERE " . implode(" AND ", $today_conditions) . "
-    ORDER BY a.appointment_time ASC
-";
-$stmt_today = $conn->prepare($today_sql);
-if (!empty($today_params)) {
-    $stmt_today->bind_param($today_param_types, ...$today_params);
-}
-$stmt_today->execute();
-$today_appts = $stmt_today->get_result();
-?>
-
-<!-- Today's Appointments Section -->
-            
-
-<div class="main-container">
     <!-- Header Section -->
     <div class="header-section">
         <div class="welcome-text">
@@ -1154,6 +942,7 @@ $today_appts = $stmt_today->get_result();
         </form>
     </div>
 
+    <!-- Today's Appointments Section -->
     <?php
 $search = isset($_GET['search']) ? trim($_GET['search']) : "";
 $date_filter = isset($_GET['date_filter']) ? trim($_GET['date_filter']) : '';
@@ -1196,7 +985,6 @@ $stmt_today->execute();
 $today_appts = $stmt_today->get_result();
 ?>
 
-<!-- Today's Appointments Section -->
 <?php if ($today_appts && $today_appts->num_rows > 0) { ?>
     <div class="glass-card fade-in">
         <div class="section-header">
