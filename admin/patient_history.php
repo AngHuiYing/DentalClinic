@@ -445,6 +445,22 @@ include 'includes/navbar.php';
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('patient_email');
+            if (email) {
+                document.getElementById('medicalHistoryModal').classList.add('show');
+                document.getElementById('medicalHistoryContent').innerHTML = '<div style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+                fetch('get_medical_history.php?email=' + encodeURIComponent(email))
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('medicalHistoryContent').innerHTML = data;
+                    })
+                    .catch(error => {
+                        document.getElementById('medicalHistoryContent').innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--danger-color);"><i class="fas fa-exclamation-triangle"></i> Error loading medical history</div>';
+                    });
+            }
+        });
         function viewMedicalHistory(email, name) {
             document.getElementById('medicalHistoryModal').classList.add('show');
             document.getElementById('medicalHistoryContent').innerHTML = '<div style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';

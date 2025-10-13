@@ -420,7 +420,15 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
             }
 
             .brand-text {
-                display: none;
+                display: flex !important;
+                flex-direction: column;
+                margin-left: 8px;
+            }
+            .brand-main {
+                font-size: 16px;
+            }
+            .brand-sub {
+                font-size: 10px;
             }
 
             .user-info {
@@ -468,6 +476,11 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
         .mobile-menu-toggle {
             display: none;
         }
+        @media (max-width: 992px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+        }
 
         .mobile-menu {
             display: none;
@@ -480,14 +493,129 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
             z-index: 999;
             max-height: calc(100vh - 70px);
             overflow-y: auto;
+            border-radius: 0 0 18px 18px;
+            padding-bottom: 1rem;
         }
 
         .mobile-menu.active {
             display: block;
         }
+            /* Mobile Mega Menu Overlay */
+            #mobileMegaMenuOverlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(79,70,229,0.12);
+                z-index: 3000;
+                overflow-y: auto;
+                padding: 0 0.5rem;
+            }
+            .mobile-mega-menu-content {
+                background: var(--white);
+                border-radius: 18px;
+                max-width: 420px;
+                width: 100%;
+                margin: 64px auto 24px auto;
+                box-shadow: 0 8px 32px rgba(79,70,229,0.18);
+                padding: 1.2rem 1rem 2rem 1rem;
+                position: relative;
+                min-height: 60vh;
+                box-sizing: border-box;
+                overflow: visible;
+                z-index: 4000;
+            }
+            .mobile-mega-menu-close {
+                position: absolute;
+                top: 12px;
+                right: 12px;
+                background: var(--danger-color);
+                color: var(--white);
+                border: none;
+                border-radius: 50%;
+                width: 36px;
+                height: 36px;
+                font-size: 1.2rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 2px 8px rgba(239,68,68,0.18);
+                cursor: pointer;
+                z-index: 10;
+            }
+            .mega-menu-mobile {
+                display: block;
+                margin: 0;
+                padding: 0;
+            }
+            .mega-menu-mobile .mega-item {
+                margin-bottom: 1.2rem;
+            }
+            .mega-menu-mobile .mega-dropdown-content {
+                grid-template-columns: 1fr !important;
+                padding: 0.5rem !important;
+            }
+            .mega-menu-mobile .mega-section {
+                margin-bottom: 1.2rem;
+                background: var(--gray-50);
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(79,70,229,0.04);
+                padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+            }
+            .mega-menu-mobile .mega-section-title {
+                font-size: 1.08rem;
+                font-weight: 700;
+                color: var(--primary-color);
+                background: linear-gradient(90deg, var(--gray-100) 60%, var(--gray-50) 100%);
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(79,70,229,0.07);
+                padding: 0.5rem 0.75rem;
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .mega-menu-mobile .mega-section-title i {
+                font-size: 18px;
+                color: var(--primary-color);
+            }
+            .mega-menu-mobile .mega-section-link {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 0.7rem 0.75rem;
+                color: var(--gray-700);
+                text-decoration: none;
+                font-weight: 500;
+                border-radius: 8px;
+                transition: var(--transition);
+            }
+            .mega-menu-mobile .mega-section-link:hover {
+                background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+                color: var(--white);
+            }
+            .mega-menu-mobile .mega-section-link i {
+                font-size: 16px;
+                width: 20px;
+                color: var(--primary-color);
+                transition: color 0.2s;
+            }
+            .mega-menu-mobile .mega-section-link:hover i {
+                color: var(--white);
+            }
 
         .mobile-menu-item {
             border-bottom: 1px solid var(--gray-200);
+            background: var(--gray-50);
+            border-radius: 12px;
+            margin: 0.5rem 0.75rem;
+            box-shadow: 0 2px 8px rgba(79,70,229,0.04);
+            transition: box-shadow 0.2s;
+        }
+        .mobile-menu-item:last-child {
+            border-bottom: none;
         }
 
         .mobile-menu-link {
@@ -498,18 +626,52 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
             color: var(--gray-700);
             text-decoration: none;
             font-weight: 500;
+            border-radius: 10px;
             transition: var(--transition);
         }
-
         .mobile-menu-link:hover {
-            background: var(--gray-50);
-            color: var(--primary-color);
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
             text-decoration: none;
         }
-
         .mobile-menu-link i {
-            font-size: 16px;
-            width: 20px;
+            font-size: 18px;
+            width: 24px;
+            color: var(--primary-color);
+            transition: color 0.2s;
+        }
+        .mobile-menu-link:hover i {
+            color: var(--white);
+        }
+        .mobile-menu-group {
+            margin: 1.2rem 0 0.5rem 0;
+        }
+        .mobile-menu-group-title {
+            font-weight: 700;
+            font-size: 1.08rem;
+            color: var(--primary-color);
+            background: linear-gradient(90deg, var(--gray-100) 60%, var(--gray-50) 100%);
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(79,70,229,0.07);
+            padding: 0.85rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+            margin: 0 0.75rem;
+        }
+        .mobile-menu-group-title i {
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+        .mobile-menu-arrow {
+            margin-left: auto;
+            font-size: 1.1rem;
+            color: var(--gray-400);
+        }
+        .mobile-menu-group-list {
+            margin-top: 0.2rem;
         }
     </style>
     <?php if (isset($additional_styles)) echo $additional_styles; ?>
@@ -518,6 +680,10 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-container">
+            <!-- Mobile Menu Toggle (left of brand icon on mobile) -->
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
             <!-- Brand -->
             <a href="dashboard.php" class="navbar-brand">
                 <div class="brand-icon">
@@ -528,11 +694,6 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
                     <div class="brand-sub">Admin Panel</div>
                 </div>
             </a>
-
-            <!-- Mobile Menu Toggle -->
-            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-                <i class="fas fa-bars"></i>
-            </button>
 
             <!-- Mega Menu -->
             <ul class="mega-menu">
@@ -582,7 +743,7 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
                                         <i class="fas fa-clipboard-list"></i>
                                         Medical History
                                     </a>
-                                    <a href="view_billing_report.php" class="mega-section-link">
+                                    <a href="billing.php#billing-records" class="mega-section-link">
                                         <i class="fas fa-receipt"></i>
                                         Billing History
                                     </a>
@@ -643,7 +804,7 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
                                 </div>
                                 <div class="mega-section-links">
                                     <a href="reports.php?type=doctor" class="mega-section-link">
-                                        <i class="fas fa-analytics"></i>
+                                        <i class="fas fa-file-medical"></i>
                                         Doctor Reports
                                     </a>
                                     <a href="manage_reviews.php?filter=doctor" class="mega-section-link">
@@ -715,7 +876,7 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
                                 </div>
                                 <div class="mega-section-links">
                                     <a href="reports.php?type=appointments" class="mega-section-link">
-                                        <i class="fas fa-analytics"></i>
+                                        <i class="fas fa-chart-line"></i>
                                         Appointment Reports
                                     </a>
                                 </div>
@@ -754,10 +915,10 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
                                         <i class="fas fa-clipboard-list"></i>
                                         System Logs
                                     </a>
-                                    <a href="clinic_settings.php" class="mega-section-link">
+                                    <!-- <a href="clinic_settings.php" class="mega-section-link">
                                         <i class="fas fa-cog"></i>
                                         Clinic Settings
-                                    </a>
+                                    </a> -->
                                 </div>
                             </div>
                         </div>
@@ -782,78 +943,94 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
         </div>
     </nav>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobileMenu">
-        <div class="mobile-menu-item">
-            <a href="dashboard.php" class="mobile-menu-link">
-                <i class="fas fa-home"></i>
-                Dashboard
-            </a>
+        <!-- Mobile Mega Menu Overlay -->
+        <div id="mobileMegaMenuOverlay" style="display:none;">
+            <div class="mobile-mega-menu-content">
+                <button class="mobile-mega-menu-close" onclick="closeMobileMegaMenu()"><i class="fas fa-times"></i></button>
+                    <div class="mega-menu-mobile">
+                        <!-- Dashboard -->
+                        <div class="mega-section">
+                            <div class="mega-section-title"><i class="fas fa-home"></i> Dashboard</div>
+                            <div class="mega-section-links">
+                                <a href="dashboard.php" class="mega-section-link"><i class="fas fa-home"></i> Dashboard</a>
+                            </div>
+                        </div>
+                        <!-- Patients -->
+                        <div class="mega-section">
+                            <div class="mega-section-title"><i class="fas fa-users"></i> Patients</div>
+                            <div class="mega-section-links">
+                                <a href="manage_users.php" class="mega-section-link"><i class="fas fa-users-cog"></i> Manage Patients</a>
+                                <a href="add_user.php" class="mega-section-link"><i class="fas fa-user-plus"></i> Add New Patient</a>
+                                <a href="patient_records.php" class="mega-section-link"><i class="fas fa-file-medical"></i> Medical Records</a>
+                                <a href="patient_history.php" class="mega-section-link"><i class="fas fa-clipboard-list"></i> Medical History</a>
+                                <a href="billing.php#billing-records" class="mega-section-link"><i class="fas fa-receipt"></i> Billing History</a>
+                                <a href="messages.php" class="mega-section-link"><i class="fas fa-envelope"></i> Patient Messages</a>
+                                <a href="manage_reviews.php" class="mega-section-link"><i class="fas fa-star"></i> Patient Reviews</a>
+                            </div>
+                        </div>
+                        <!-- Doctors -->
+                        <div class="mega-section">
+                            <div class="mega-section-title"><i class="fas fa-user-md"></i> Doctors</div>
+                            <div class="mega-section-links">
+                                <a href="manage_doctors.php" class="mega-section-link"><i class="fas fa-user-cog"></i> Manage Doctors</a>
+                                <a href="add_doctor_profile.php" class="mega-section-link"><i class="fas fa-user-plus"></i> Add Doctor</a>
+                                <a href="admin_set_unavailable.php" class="mega-section-link"><i class="fas fa-calendar-times"></i> Set Availability</a>
+                                <a href="reports.php?type=doctor" class="mega-section-link"><i class="fas fa-file-medical"></i> Doctor Reports</a>
+                                <a href="manage_reviews.php?filter=doctor" class="mega-section-link"><i class="fas fa-star"></i> Doctor Reviews</a>
+                                <a href="manage_appointments.php?view=doctor" class="mega-section-link"><i class="fas fa-calendar-alt"></i> Doctor Schedules</a>
+                            </div>
+                        </div>
+                        <!-- Appointments -->
+                        <div class="mega-section">
+                            <div class="mega-section-title"><i class="fas fa-calendar-check"></i> Appointments</div>
+                            <div class="mega-section-links">
+                                <a href="manage_appointments.php" class="mega-section-link"><i class="fas fa-list"></i> All Appointments</a>
+                                <a href="add_appointment.php" class="mega-section-link"><i class="fas fa-plus"></i> Schedule Appointment</a>
+                                <a href="manage_appointments.php?date=today" class="mega-section-link"><i class="fas fa-calendar-day"></i> Today's Appointments</a>
+                                <a href="manage_appointments.php?status=confirmed" class="mega-section-link"><i class="fas fa-check-circle"></i> Confirmed Appointments</a>
+                                <a href="reports.php?type=appointments" class="mega-section-link"><i class="fas fa-chart-line"></i> Appointment Reports</a>
+                            </div>
+                        </div>
+                        <!-- System -->
+                        <div class="mega-section">
+                            <div class="mega-section-title"><i class="fas fa-cog"></i> System</div>
+                            <div class="mega-section-links">
+                                <a href="manage_service.php" class="mega-section-link"><i class="fas fa-tools"></i> Services</a>
+                                <a href="billing.php" class="mega-section-link"><i class="fas fa-dollar-sign"></i> Billing</a>
+                                <a href="reports.php" class="mega-section-link"><i class="fas fa-chart-bar"></i> Reports & Analytics</a>
+                                <a href="system_logs.php" class="mega-section-link"><i class="fas fa-clipboard-list"></i> System Logs</a>
+                                <!-- <a href="clinic_settings.php" class="mega-section-link"><i class="fas fa-cog"></i> Clinic Settings</a> -->
+                            </div>
+                        </div>
+                    </div>
+            </div>
         </div>
-        <div class="mobile-menu-item">
-            <a href="manage_users.php" class="mobile-menu-link">
-                <i class="fas fa-users"></i>
-                Patients
-            </a>
-        </div>
-        <div class="mobile-menu-item">
-            <a href="manage_doctors.php" class="mobile-menu-link">
-                <i class="fas fa-user-md"></i>
-                Doctors
-            </a>
-        </div>
-        <div class="mobile-menu-item">
-            <a href="manage_appointments.php" class="mobile-menu-link">
-                <i class="fas fa-calendar-check"></i>
-                Appointments
-            </a>
-        </div>
-        <div class="mobile-menu-item">
-            <a href="patient_history.php" class="mobile-menu-link">
-                <i class="fas fa-history"></i>
-                History
-            </a>
-        </div>
-        <div class="mobile-menu-item">
-            <a href="billing.php" class="mobile-menu-link">
-                <i class="fas fa-dollar-sign"></i>
-                Billing
-            </a>
-        </div>
-        <div class="mobile-menu-item">
-            <a href="reports.php" class="mobile-menu-link">
-                <i class="fas fa-chart-bar"></i>
-                Reports
-            </a>
-        </div>
-        <div class="mobile-menu-item">
-            <a href="system_logs.php" class="mobile-menu-link">
-                <i class="fas fa-history"></i>
-                System Logs
-            </a>
-        </div>
-    </div>
 
+    <!-- Mobile Menu -->
+    <!-- Mobile Menu removed for overlay mega menu -->
     <script>
         function toggleMobileMenu() {
-            const mobileMenu = document.getElementById('mobileMenu');
-            mobileMenu.classList.toggle('active');
+            // Show overlay mega menu for mobile
+            if (window.innerWidth <= 992) {
+                document.getElementById('mobileMegaMenuOverlay').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
         }
-
-        // Close mobile menu when clicking outside
+        function closeMobileMegaMenu() {
+            document.getElementById('mobileMegaMenuOverlay').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        // Close overlay when clicking background
         document.addEventListener('click', function(event) {
-            const mobileMenu = document.getElementById('mobileMenu');
-            const toggleButton = document.querySelector('.mobile-menu-toggle');
-            
-            if (!mobileMenu.contains(event.target) && !toggleButton.contains(event.target)) {
-                mobileMenu.classList.remove('active');
+            var overlay = document.getElementById('mobileMegaMenuOverlay');
+            if (overlay.style.display === 'block' && event.target === overlay) {
+                closeMobileMegaMenu();
             }
         });
-
-        // Close mobile menu on resize to desktop
+        // Hide overlay on desktop resize
         window.addEventListener('resize', function() {
             if (window.innerWidth > 992) {
-                document.getElementById('mobileMenu').classList.remove('active');
+                closeMobileMegaMenu();
             }
         });
     </script>

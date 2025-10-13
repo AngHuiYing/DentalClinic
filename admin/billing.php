@@ -1074,9 +1074,9 @@ $result = $conn->query("SELECT * FROM billing ORDER BY created_at DESC LIMIT $bi
             </form>
         </div>
 
-        <!-- Billing Records Section -->
+    <!-- Billing Records Section -->
         <div class="neu-card loading-animation">
-            <div class="section-header">
+            <div class="section-header" id="billing-records">
                 <div class="section-icon">
                     <i class="fas fa-table"></i>
                 </div>
@@ -1263,5 +1263,22 @@ $result = $conn->query("SELECT * FROM billing ORDER BY created_at DESC LIMIT $bi
             <?php endif; ?>
         </div>
     </div>
+    <script>
+    // 只有 patient nav 的 billing records 連結才自動滾動 table
+    window.addEventListener('DOMContentLoaded', function() {
+        var target = document.getElementById('billing-records');
+        var navbar = document.querySelector('.navbar');
+        var ref = document.referrer;
+        var hash = window.location.hash;
+        // 只有 patient nav 的 billing records 連結才帶 #billing-records 且 referrer 來自 admin nav patient 相關頁
+        if (target && hash === '#billing-records' && ref.match(/(manage_users|add_user|patient_records|patient_history|messages|manage_reviews)\.php/)) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(function() {
+                var navbarHeight = navbar ? navbar.offsetHeight : 0;
+                window.scrollBy({ top: -(navbarHeight + 12), left: 0, behavior: 'smooth' });
+            }, 400);
+        }
+    });
+    </script>
 </body>
 </html>
