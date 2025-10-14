@@ -228,6 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
+    <?php include '../includes/navbar.php'; ?>
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-8">

@@ -128,16 +128,34 @@ if (!empty($params)) {
 $stmt->execute();
 $appointments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
+// Get today's appointments separately (not affected by pagination)
+$today_sql = "SELECT a.id, 
+               a.appointment_date, 
+               a.appointment_time, 
+               a.status,
+               a.created_at,
+               a.message,
+               a.patient_phone,
+               COALESCE(u.name, a.patient_name) as patient_name,
+               COALESCE(u.email, a.patient_email) as patient_email
+        FROM appointments a
+        LEFT JOIN users u ON a.patient_id = u.id
+        WHERE a.doctor_id = ? AND a.appointment_date = CURDATE()
+        ORDER BY a.appointment_time ASC";
+
+$today_stmt = $conn->prepare($today_sql);
+$today_stmt->bind_param("i", $doctor_id);
+$today_stmt->execute();
+$today_appointments = $today_stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$today_stmt->close();
+
 // Get statistics
-$today_count = 0;
+$today_count = count($today_appointments);
 $upcoming_count = 0;
 $pending_count = 0;
 $completed_count = 0;
 
 foreach ($appointments as $appointment) {
-    if ($appointment['appointment_date'] === date('Y-m-d')) {
-        $today_count++;
-    }
     if ($appointment['appointment_date'] >= date('Y-m-d')) {
         $upcoming_count++;
     }
@@ -887,11 +905,6 @@ foreach ($appointments as $appointment) {
             </section>
 
             <!-- Today's Appointments Table -->
-            <?php 
-            $today_appointments = array_filter($appointments, function($appointment) {
-                return $appointment['appointment_date'] === date('Y-m-d');
-            });
-            ?>
             <?php if (!empty($today_appointments)): ?>
             <section class="appointments-section fade-in" style="margin-bottom: 2rem;">
                 <div class="appointments-header" style="background: linear-gradient(135deg, var(--success) 0%, #059669 100%);">
@@ -917,14 +930,7 @@ foreach ($appointments as $appointment) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php 
-                            // Sort today's appointments by time
-                            usort($today_appointments, function($a, $b) {
-                                return strcmp($a['appointment_time'], $b['appointment_time']);
-                            });
-                            
-                            foreach ($today_appointments as $appointment): 
-                            ?>
+                            <?php foreach ($today_appointments as $appointment): ?>
                             <tr>
                                 <td>
                                     <div>

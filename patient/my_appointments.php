@@ -250,8 +250,13 @@ $result = $stmt->get_result();
             border: none;
             border-radius: 8px;
             font-weight: 500;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.3s ease;
+        }
+        
+        .search-btn i {
+            font-size: 0.8rem;
         }
 
         .search-btn:hover {

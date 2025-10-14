@@ -766,7 +766,7 @@ $total_reviews = $review_stats['total_reviews'];
                         </div>
                     </div>
 
-                    <div class="stat-card">
+                    <!-- <div class="stat-card">
                         <div class="stat-content">
                             <div class="stat-info">
                                 <h3><?php echo $avg_rating; ?>/5</h3>
@@ -777,7 +777,7 @@ $total_reviews = $review_stats['total_reviews'];
                                 <i class="fas fa-star"></i>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </section>
 
@@ -837,7 +837,7 @@ $total_reviews = $review_stats['total_reviews'];
                         <p class="action-description">Update your professional information and credentials</p>
                     </a>
 
-                    <a href="my_reviews.php" class="action-card">
+                    <!-- <a href="my_reviews.php" class="action-card">
                         <div class="action-header">
                             <div class="action-icon" style="background: linear-gradient(135deg, #ffd700, #ffed4e);">
                                 <i class="fas fa-star"></i>
@@ -845,7 +845,7 @@ $total_reviews = $review_stats['total_reviews'];
                             <h3 class="action-title">My Reviews</h3>
                         </div>
                         <p class="action-description">View patient feedback and ratings for your care</p>
-                    </a>
+                    </a> -->
 
                     <!-- <a href="doctor_setunavailable.php" class="action-card">
                         <div class="action-header">

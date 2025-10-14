@@ -788,6 +788,24 @@ body {
 <footer class="footer" id="contact">
     <p>© 2025 Green Smile Dental Clinic. All rights reserved.</p>
     <p>Contact: info@greensmile.com | +123 456 7890</p>
+    <p style="margin-top: 10px; font-size: 12px;">
+        Opening Hours: Mon-Fri 9:00 AM - 6:00 PM | Sat 9:00 AM - 2:00 PM
+    </p>
+    
+    <!-- 隐藏的员工入口 - 只有员工知道 -->
+    <p style="margin-top: 25px; font-size: 9px; opacity: 0.2;">
+        <a href="doctor/login.php" style="color: #bdc3c7; text-decoration: none; transition: opacity 0.3s; margin: 0 10px;" 
+           onmouseover="this.style.opacity='1'" 
+           onmouseout="this.style.opacity='0.2'">
+           Doctor
+        </a>
+        <span style="color: #95a5a6;">|</span>
+        <a href="admin/login.php" style="color: #bdc3c7; text-decoration: none; transition: opacity 0.3s; margin: 0 10px;" 
+           onmouseover="this.style.opacity='1'" 
+           onmouseout="this.style.opacity='0.2'">
+           Admin
+        </a>
+    </p>
 </footer>
 
 </body>

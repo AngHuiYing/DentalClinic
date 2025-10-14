@@ -29,16 +29,25 @@ $current_url = $_SERVER['PHP_SELF'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Green Life Dental Clinic</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #2563eb;
-            --secondary-color: #10b981;
-            --accent-color: #f59e0b;
-            --light-bg: #ffffff;
-            --text-primary: #1f2937;
-            --text-secondary: #6b7280;
-            --navbar-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --gradient-bg: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+            --primary-color: #4f46e5;
+            --primary-dark: #3730a3;
+            --secondary-color: #7c3aed;
+            --accent-color: #10b981;
+            --white: #ffffff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --border-radius-lg: 12px;
+            --border-radius-xl: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -48,26 +57,25 @@ $current_url = $_SERVER['PHP_SELF'];
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8fafc;
-            padding-top: 85px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--gray-50);
+            padding-top: 70px;
             line-height: 1.6;
             position: relative;
             z-index: 1;
             overflow-x: hidden;
         }
 
-        /* Modern Navbar Design */
+        /* Modern Navbar Design - Admin Style */
         .navbar {
-            background: var(--light-bg);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             padding: 0;
-            box-shadow: var(--navbar-shadow);
+            box-shadow: var(--shadow-lg);
             position: fixed;
             width: 100%;
             top: 0;
             left: 0;
             z-index: 9999;
-            border-bottom: 1px solid rgba(37, 99, 235, 0.1);
         }
 
         .navbar-container {
@@ -113,35 +121,38 @@ $current_url = $_SERVER['PHP_SELF'];
             }
         }
 
-        /* Clinic Logo/Brand */
+        /* Clinic Logo/Brand - Admin Style */
         .navbar-brand {
             display: flex;
             align-items: center;
             gap: 12px;
             text-decoration: none;
-            color: var(--text-primary);
+            color: var(--white);
             font-weight: 700;
             font-size: 1.4rem;
             flex-shrink: 0;
+            transition: var(--transition);
         }
 
         .navbar-brand:hover {
-            color: var(--primary-color);
+            transform: translateY(-1px);
             text-decoration: none;
+            color: var(--white);
         }
 
         .navbar-brand .brand-icon {
-            background: var(--gradient-bg);
-            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
             padding: 8px;
-            border-radius: 12px;
+            border-radius: var(--border-radius-lg);
             font-size: 1.5rem;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
             width: 44px;
             height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .navbar-brand .brand-text {
@@ -152,14 +163,16 @@ $current_url = $_SERVER['PHP_SELF'];
         }
 
         .navbar-brand .brand-main {
-            font-size: 1.2rem;
-            color: var(--text-primary);
+            font-size: 1.1rem;
+            color: var(--white);
+            font-weight: 700;
+            letter-spacing: -0.25px;
         }
 
         .navbar-brand .brand-sub {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            font-weight: 400;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -189,7 +202,7 @@ $current_url = $_SERVER['PHP_SELF'];
                 max-width: none;
                 overflow-x: visible;
                 padding-right: 0;
-                gap: 4px;
+                gap: 2px;
             }
         }
 
@@ -223,35 +236,37 @@ $current_url = $_SERVER['PHP_SELF'];
 
         .navbar-nav li a {
             text-decoration: none;
-            font-size: 0.60rem;
+            font-size: 0.85rem;
             font-weight: 500;
-            color: var(--text-primary);
-            padding: 6px 8px;
-            border-radius: 6px;
+            color: rgba(255, 255, 255, 0.9);
+            padding: 10px 12px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             position: relative;
             white-space: nowrap;
             min-width: fit-content;
-            transition: all 0.2s ease;
+            transition: var(--transition);
         }
 
         .navbar-nav li a i {
-            font-size: 0.85rem;
-            opacity: 0.8;
+            font-size: 1rem;
+            opacity: 0.9;
         }
 
         .navbar-nav li a:hover {
-            background: rgba(37, 99, 235, 0.08);
-            color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--white);
             text-decoration: none;
+            transform: translateY(-1px);
+            backdrop-filter: blur(10px);
         }
 
         .navbar-nav li a.active {
-            background: var(--gradient-bg);
-            color: white;
-            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            backdrop-filter: blur(10px);
         }
 
         .navbar-nav li a.active i {
@@ -266,7 +281,134 @@ $current_url = $_SERVER['PHP_SELF'];
 
         .navbar-nav li a.logout-btn:hover {
             background: linear-gradient(135deg, #dc2626, #b91c1c);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Patient-specific navigation styling - more compact */
+        .navbar-container.patient-nav .navbar-nav {
+            justify-content: flex-start;
+            margin-left: 0;
+        }
+
+        .navbar-container.patient-nav .navbar-nav li a {
+            padding: 10px 8px;
+            gap: 5px;
+            font-size: 0.8rem;
+        }
+
+        @media (min-width: 981px) {
+            .navbar-container.patient-nav .navbar-nav {
+                justify-content: flex-start;
+                gap: 1px;
+            }
+        }
+
+        /* Mega Dropdown Styles */
+        .navbar-nav li.has-mega-dropdown {
+            position: relative;
+        }
+
+        .navbar-nav li.has-mega-dropdown .mega-dropdown-trigger {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .navbar-nav li.has-mega-dropdown .dropdown-arrow {
+            font-size: 0.7rem;
+            transition: transform 0.3s ease;
+            margin-left: 2px;
+        }
+
+        .navbar-nav li.has-mega-dropdown:hover .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .mega-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--white);
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-xl);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 320px;
+            z-index: 1000;
+            border: 1px solid var(--gray-200);
+        }
+
+        .navbar-nav li.has-mega-dropdown:hover .mega-dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .mega-dropdown-content {
+            padding: 16px;
+        }
+
+        .mega-section {
+            margin-bottom: 8px;
+        }
+
+        .mega-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .mega-section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(124, 58, 237, 0.05));
+            border-radius: 10px;
+            border: 1px solid rgba(79, 70, 229, 0.1);
+        }
+
+        .mega-section-title i {
+            font-size: 1.1rem;
+        }
+
+        .mega-section-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--gray-700);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .mega-section-link i {
+            width: 24px;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            opacity: 0.7;
+        }
+
+        .mega-section-link:hover {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(124, 58, 237, 0.08));
+            color: var(--primary-color);
+            text-decoration: none;
+            transform: translateX(4px);
+        }
+
+        .mega-section-link:hover i {
+            opacity: 1;
+            transform: scale(1.1);
         }
 
         /* Modern User Info Design */
@@ -276,11 +418,11 @@ $current_url = $_SERVER['PHP_SELF'];
             align-items: center;
             gap: 12px;
             padding: 8px 16px;
-            background: white;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
             cursor: pointer;
             min-width: 180px;
             height: 60px;
@@ -300,14 +442,14 @@ $current_url = $_SERVER['PHP_SELF'];
         .mobile-clinic-title .clinic-name {
             font-weight: 700;
             font-size: 1rem;
-            color: var(--text-primary);
+            color: var(--white);
             line-height: 1.2;
         }
         
         .mobile-clinic-title .clinic-subtitle {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            font-weight: 400;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -321,30 +463,30 @@ $current_url = $_SERVER['PHP_SELF'];
 
         .user-info:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.15);
-            border-color: #2563eb;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
         }
 
         .user-avatar {
             width: 44px;
             height: 44px;
-            background: #f3f4f6;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #374151;
+            color: var(--white);
             font-weight: 600;
             font-size: 1rem;
-            border: 2px solid #e5e7eb;
-            transition: all 0.2s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: var(--transition);
             flex-shrink: 0;
         }
 
         .user-info:hover .user-avatar {
-            background: #2563eb;
-            color: white;
-            border-color: #2563eb;
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
         }
 
         .user-details {
@@ -359,7 +501,7 @@ $current_url = $_SERVER['PHP_SELF'];
         .user-name {
             font-weight: 600;
             font-size: 0.9rem;
-            color: #111827;
+            color: var(--white);
             margin-bottom: 2px;
             white-space: nowrap;
             overflow: hidden;
@@ -369,7 +511,7 @@ $current_url = $_SERVER['PHP_SELF'];
 
         .user-role {
             font-size: 0.75rem;
-            color: #6b7280;
+            color: rgba(255, 255, 255, 0.8);
             text-transform: capitalize;
             font-weight: 500;
         }
@@ -389,11 +531,12 @@ $current_url = $_SERVER['PHP_SELF'];
             background: #22c55e;
             border-radius: 50%;
             flex-shrink: 0;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
         }
 
         .status-text {
             font-size: 0.7rem;
-            color: #059669;
+            color: rgba(255, 255, 255, 0.9);
             font-weight: 500;
         }
             transform: scale(1.05);
@@ -443,19 +586,20 @@ $current_url = $_SERVER['PHP_SELF'];
         /* Mobile Menu Toggle */
         .menu-toggle {
             display: none;
-            background: none;
-            border: none;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             font-size: 1.5rem;
-            color: var(--text-primary);
+            color: var(--white);
             cursor: pointer;
             padding: 8px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
+            border-radius: 10px;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
         }
 
         .menu-toggle:hover {
-            background: rgba(37, 99, 235, 0.08);
-            color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
         }
 
         /* Responsive Design */
@@ -562,19 +706,28 @@ $current_url = $_SERVER['PHP_SELF'];
         /* 當屏幕太小時，強制使用移動端菜單 */
         @media (max-width: 980px) {
             .navbar-container {
-                padding: 0 70px 0 15px; /* 右側留出足夠空間給汉堡菜单 */
+                padding: 0 15px; /* 統一padding */
                 justify-content: space-between;
                 position: relative;
+                gap: 10px;
+            }
+            
+            /* 已登錄用戶的佈局：Brand左 - User Info中 - Burger右 */
+            .navbar-brand {
+                order: 1;
+                flex-shrink: 0;
+            }
+            
+            .navbar-brand .brand-text {
+                display: flex; /* 在小屏幕上也顯示 */
             }
             
             .menu-toggle {
                 display: block;
                 order: 3;
                 flex-shrink: 0;
-                position: absolute;
-                right: 15px;
-                top: 50%;
-                transform: translateY(-50%);
+                position: static; /* 改為靜態定位 */
+                transform: none;
                 z-index: 10001;
             }
 
@@ -583,7 +736,9 @@ $current_url = $_SERVER['PHP_SELF'];
                 padding: 8px 14px;
                 flex-shrink: 0;
                 gap: 12px;
-                max-width: calc(100% - 90px); /* 确保不会与汉堡菜单重叠 */
+                margin-left: auto; /* 推到右邊 */
+                margin-right: 10px; /* 與burger保持間距 */
+                max-width: none;
             }
 
             .navbar-nav {
@@ -664,6 +819,21 @@ $current_url = $_SERVER['PHP_SELF'];
                 justify-content: flex-start;
                 gap: 10px; /* 增加圖標和文字間距 */
                 min-height: 48px; /* 增加最小高度確保觸摸友好 */
+                color: var(--gray-800); /* 修復：移動端菜單文字顏色改為深色 */
+            }
+            
+            .navbar-nav li a:hover {
+                background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.1));
+                color: var(--primary-color);
+            }
+            
+            .navbar-nav li a.active {
+                background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(124, 58, 237, 0.15));
+                color: var(--primary-color);
+            }
+            
+            .navbar-nav li a i {
+                color: var(--primary-color); /* 圖標顏色 */
             }
             
             .navbar-nav li a span.nav-text {
@@ -684,6 +854,32 @@ $current_url = $_SERVER['PHP_SELF'];
                 gap: 12px;
                 max-width: calc(100% - 90px); /* 确保不会与汉堡菜单重叠 */
             }
+            
+            /* 未登錄用戶：980px 也需要靠左對齊 */
+            .navbar-container.show-mobile-title {
+                justify-content: flex-start;
+                gap: 6px;
+                padding-left: 10px;
+            }
+            
+            .navbar-container.show-mobile-title .navbar-brand {
+                margin-left: 0;
+                margin-right: 0;
+            }
+            
+            .navbar-container.show-mobile-title .navbar-brand .brand-text {
+                display: none !important;
+            }
+            
+            .navbar-container.show-mobile-title .mobile-clinic-title {
+                display: flex;
+                margin-left: 0;
+                margin-right: auto;
+            }
+            
+            .navbar-container.show-mobile-title .menu-toggle {
+                margin-left: auto;
+            }
 
             body {
                 padding-top: 90px;
@@ -692,31 +888,116 @@ $current_url = $_SERVER['PHP_SELF'];
 
         @media (max-width: 768px) {
             .navbar-container {
-                padding: 0 70px 0 15px; /* 右側留出足夠空間給汉堡菜单 */
+                padding: 0 15px; /* 統一padding */
                 flex-wrap: nowrap;
                 justify-content: space-between;
                 position: relative;
+                gap: 10px;
+            }
+
+            /* 已登錄用戶的佈局：Brand左 - User Info中 - Burger右 */
+            .navbar-brand {
+                order: 1;
+                flex-shrink: 0;
+            }
+            
+            /* 在手機上顯示完整的brand text（當用戶已登錄時） */
+            .navbar-brand .brand-text {
+                display: flex !important;
+            }
+            
+            .navbar-brand .brand-main {
+                font-size: 0.9rem;
+            }
+            
+            .navbar-brand .brand-sub {
+                font-size: 0.6rem;
+            }
+
+            .user-info {
+                order: 2;
+                padding: 6px 10px;
+                flex-shrink: 0;
+                gap: 8px;
+                min-width: auto;
+                max-width: none;
+                margin-left: auto; /* 推到右邊 */
+                margin-right: 10px; /* 與burger保持間距 */
             }
 
             .menu-toggle {
                 display: block;
                 order: 3;
                 flex-shrink: 0;
-                position: absolute;
-                right: 15px;
-                top: 50%;
-                transform: translateY(-50%);
+                position: static; /* 改為靜態定位 */
+                transform: none;
                 z-index: 10001;
             }
             
-            /* Show mobile clinic title for non-logged users */
-            .navbar-container.show-mobile-title .mobile-clinic-title {
-                display: flex;
+            /* 未登錄用戶：愛心圖案靠左，標題貼在旁邊，Burger靠右 */
+            .navbar-container.show-mobile-title {
+                justify-content: flex-start; /* 改為靠左對齊 */
+                gap: 6px; /* 減少間距 */
+                padding-left: 10px; /* 減少左邊padding讓內容更靠左 */
             }
             
-            /* Hide brand text on mobile when showing mobile title */
+            .navbar-container.show-mobile-title .navbar-brand {
+                order: 1;
+                flex-shrink: 0;
+                margin-right: 0;
+                margin-left: 0; /* 確保沒有左邊距 */
+            }
+            
+            /* 保留愛心圖案，但隱藏文字 */
             .navbar-container.show-mobile-title .navbar-brand .brand-text {
-                display: none;
+                display: none !important;
+            }
+            
+            /* 標題緊貼在愛心圖標右邊 */
+            .navbar-container.show-mobile-title .mobile-clinic-title {
+                display: flex;
+                order: 2;
+                margin-left: 0; /* 去掉左邊距 */
+                margin-right: auto; /* 推送汉堡按钮到右边 */
+            }
+            
+            .navbar-container.show-mobile-title .menu-toggle {
+                margin-left: auto; /* 確保burger按鈕在最右邊 */
+            }
+
+            /* Mobile Mega Dropdown */
+            .navbar-nav li.has-mega-dropdown .mega-dropdown-trigger {
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .navbar-nav li.has-mega-dropdown .mega-dropdown-menu {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                border-radius: 0;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+            }
+
+            .navbar-nav li.has-mega-dropdown.mobile-dropdown-open .mega-dropdown-menu {
+                max-height: 500px;
+            }
+
+            .navbar-nav li.has-mega-dropdown.mobile-dropdown-open .dropdown-arrow {
+                transform: rotate(180deg);
+            }
+
+            .navbar-nav li.has-mega-dropdown .mega-dropdown-content {
+                padding: 0 12px 12px 24px;
+            }
+
+            .navbar-nav li.has-mega-dropdown .mega-section-link {
+                font-size: 0.85rem;
+                padding: 8px 12px;
             }
 
             .navbar-nav {
@@ -797,6 +1078,21 @@ $current_url = $_SERVER['PHP_SELF'];
                 justify-content: flex-start;
                 gap: 10px; /* 增加圖標和文字間距 */
                 min-height: 48px; /* 增加最小高度確保觸摸友好 */
+                color: var(--gray-800); /* 修復：移動端菜單文字顏色改為深色 */
+            }
+            
+            .navbar-nav li a:hover {
+                background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.1));
+                color: var(--primary-color);
+            }
+            
+            .navbar-nav li a.active {
+                background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(124, 58, 237, 0.15));
+                color: var(--primary-color);
+            }
+            
+            .navbar-nav li a i {
+                color: var(--primary-color); /* 圖標顏色 */
             }
             
             .navbar-nav li a span.nav-text {
@@ -809,20 +1105,11 @@ $current_url = $_SERVER['PHP_SELF'];
                 padding-top: 16px;
                 margin-top: 12px;
             }
-
-            .user-info {
-                order: 2;
-                padding: 8px 14px;
-                flex-shrink: 0;
-                gap: 12px;
-                max-width: calc(100% - 90px); /* 确保不会与汉堡菜单重叠 */
-                min-width: 140px;
-            }
             
-            /* 调整移动端诊所标题的边距，避免与汉堡菜单重叠 */
+            /* 调整移动端诊所标题的边距 */
             .mobile-clinic-title {
-                margin: 0 20px;
-                max-width: calc(100% - 140px); /* 为汉堡菜单和品牌图标留出空间 */
+                margin: 0 auto;
+                max-width: 200px;
             }
 
             .user-avatar {
@@ -843,11 +1130,37 @@ $current_url = $_SERVER['PHP_SELF'];
 
         @media (max-width: 480px) {
             .navbar-container {
-                padding: 0 65px 0 15px; /* 为小屏幕的汉堡菜单留出足够空间 */
+                padding: 0 15px; /* 統一padding */
+                gap: 8px;
+            }
+            
+            /* 未登錄用戶：480px 也需要靠左對齊 */
+            .navbar-container.show-mobile-title {
+                justify-content: flex-start;
+                gap: 6px;
+                padding-left: 10px; /* 減少左邊padding讓內容更靠左 */
+            }
+            
+            .navbar-container.show-mobile-title .navbar-brand {
+                margin-left: 0;
+                margin-right: 0;
+            }
+            
+            .navbar-container.show-mobile-title .mobile-clinic-title {
+                margin-left: 0; /* 去掉左邊距 */
+                margin-right: auto;
+            }
+            
+            .navbar-container.show-mobile-title .menu-toggle {
+                margin-left: auto;
             }
             
             .navbar-brand .brand-main {
-                font-size: 1rem;
+                font-size: 0.85rem;
+            }
+            
+            .navbar-brand .brand-sub {
+                font-size: 0.55rem;
             }
 
             .user-info-placeholder {
@@ -856,8 +1169,8 @@ $current_url = $_SERVER['PHP_SELF'];
             }
             
             .mobile-clinic-title {
-                margin: 0 15px;
-                max-width: calc(100% - 120px); /* 为汉堡菜单和品牌图标留出更多空间 */
+                margin: 0 10px;
+                max-width: calc(100% - 140px);
             }
             
             .mobile-clinic-title .clinic-name {
@@ -1032,7 +1345,7 @@ $current_url = $_SERVER['PHP_SELF'];
 </head>
 <body>
     <nav class="navbar">
-        <div class="navbar-container">
+        <div class="navbar-container <?php echo (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'patient') ? 'patient-nav' : ''; ?>">
             <!-- Clinic Brand/Logo -->
             <a href="<?php 
                 // 根据用户角色动态设置链接地址
@@ -1188,9 +1501,6 @@ $current_url = $_SERVER['PHP_SELF'];
                     <li><a href="/Dental_Clinic/doctor/doctor_profile.php" <?php echo (strpos($current_url, 'doctor_profile.php') !== false) ? 'class="active"' : ''; ?>>
                         <i class="bi bi-person-circle"></i>My Profile
                     </a></li>
-                    <li><a href="/Dental_Clinic/doctor/my_reviews.php" <?php echo (strpos($current_url, 'my_reviews.php') !== false) ? 'class="active"' : ''; ?>>
-                        <i class="bi bi-star-fill"></i>My Reviews
-                    </a></li>
                     <!-- <li><a href="/Dental_Clinic/doctor/messages.php" <?php echo (strpos($current_url, 'messages.php') !== false) ? 'class="active"' : ''; ?>>
                         <i class="bi bi-chat-dots"></i>Messages
                     </a></li> -->
@@ -1232,27 +1542,37 @@ $current_url = $_SERVER['PHP_SELF'];
                     </a></li>
 
                 <?php } elseif (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) { ?>
-                    <!-- Public Navigation Menu -->
+                    <!-- Public Navigation Menu with Mega Menu -->
                     <li><a href="/Dental_Clinic/index.php" <?php echo (strpos($current_url, 'index.php') !== false || $current_url === '/Dental_Clinic/') ? 'class="active"' : ''; ?>>
-                        <i class="bi bi-house"></i>Home
+                        <i class="bi bi-house"></i><span class="nav-text">Home</span>
                     </a></li>
+                    
                     <li><a href="/Dental_Clinic/all_doctors.php" <?php echo (strpos($current_url, 'all_doctors.php') !== false) ? 'class="active"' : ''; ?>>
-                        <i class="bi bi-people"></i>Our Doctors
+                        <i class="bi bi-people"></i><span class="nav-text">Our Doctors</span>
                     </a></li>
+                    
+                    <li><a href="/Dental_Clinic/index.php#departments">
+                        <i class="bi bi-briefcase"></i><span class="nav-text">Services</span>
+                    </a></li>
+                    
                     <li><a href="/Dental_Clinic/book_appointment.php" <?php echo (strpos($current_url, 'book_appointment.php') !== false) ? 'class="active"' : ''; ?>>
-                        <i class="bi bi-calendar"></i> Book Appointment
+                        <i class="bi bi-calendar"></i><span class="nav-text">Book Appointment</span>
                     </a></li>
+                    
+                    <li><a href="/Dental_Clinic/index.php#about">
+                        <i class="bi bi-info-circle"></i><span class="nav-text">About Us</span>
+                    </a></li>
+                    
+                    <li><a href="/Dental_Clinic/index.php#contact">
+                        <i class="bi bi-envelope"></i><span class="nav-text">Contact</span>
+                    </a></li>
+                    
                     <li><a href="/Dental_Clinic/patient/register.php" <?php echo (strpos($current_url, 'patient/register.php') !== false) ? 'class="active"' : ''; ?>>
-                        <i class="bi bi-person-plus"></i>Patient Register
+                        <i class="bi bi-person-plus"></i><span class="nav-text">Register</span>
                     </a></li>
+                    
                     <li><a href="/Dental_Clinic/patient/login.php" <?php echo (strpos($current_url, 'patient/login.php') !== false) ? 'class="active"' : ''; ?>>
-                        <i class="bi bi-box-arrow-in-right"></i>Patient Login
-                    </a></li>
-                    <li><a href="/Dental_Clinic/doctor/login.php" <?php echo (strpos($current_url, 'doctor/login.php') !== false) ? 'class="active"' : ''; ?>>
-                        <i class="bi bi-person-badge"></i>Doctor Login
-                    </a></li>
-                    <li><a href="/Dental_Clinic/admin/login.php" <?php echo (strpos($current_url, 'admin/login.php') !== false) ? 'class="active"' : ''; ?>>
-                        <i class="bi bi-shield-lock"></i>Admin Login
+                        <i class="bi bi-box-arrow-in-right"></i><span class="nav-text">Login</span>
                     </a></li>
                 <?php } ?>
             </ul>
@@ -1347,6 +1667,17 @@ document.addEventListener("DOMContentLoaded", function() {
     // 初始檢查和窗口大小改變時檢查
     checkNavScrollable();
     window.addEventListener('resize', checkNavScrollable);
+
+    // Handle Mobile Mega Dropdown Toggle
+    document.querySelectorAll('.has-mega-dropdown .mega-dropdown-trigger').forEach(trigger => {
+        trigger.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                const parentLi = this.closest('.has-mega-dropdown');
+                parentLi.classList.toggle('mobile-dropdown-open');
+            }
+        });
+    });
 
     if (toggle && navMenu && toggleIcon) {
         // Toggle mobile menu

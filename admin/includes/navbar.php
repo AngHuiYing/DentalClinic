@@ -400,11 +400,28 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
             }
 
             .navbar-container {
-                justify-content: space-between;
+                justify-content: flex-start;
+                gap: 10px;
             }
-
+            
+            /* 品牌靠左 */
+            .navbar-brand {
+                order: 1;
+                flex-shrink: 0;
+            }
+            
+            /* User Profile 推到右边，Burger按钮左边 */
+            .user-profile {
+                order: 2;
+                margin-left: auto;
+                margin-right: 10px;
+            }
+            
+            /* Burger按钮在最右边 */
             .mobile-menu-toggle {
                 display: block;
+                order: 3;
+                flex-shrink: 0;
                 background: none;
                 border: none;
                 color: var(--white);
@@ -422,8 +439,17 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
 
         @media (max-width: 768px) {
             .navbar-container {
-                padding: 0 1rem;
+                padding: 0 15px;
                 height: 60px;
+                justify-content: flex-start; /* 改为靠左对齐 */
+                gap: 8px;
+            }
+            
+            /* 品牌和标题靠左 */
+            .navbar-brand {
+                order: 1;
+                flex-shrink: 0;
+                margin-right: 0;
             }
 
             .brand-text {
@@ -437,14 +463,24 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
             .brand-sub {
                 font-size: 10px;
             }
+            
+            /* User Profile 推到右边，Burger按钮左边 */
+            .user-profile {
+                order: 2;
+                margin-left: auto;
+                margin-right: 10px;
+                padding: 6px 12px;
+                gap: 8px;
+            }
+            
+            /* Burger按钮在最右边 */
+            .mobile-menu-toggle {
+                order: 3;
+                flex-shrink: 0;
+            }
 
             .user-info {
                 display: none;
-            }
-
-            .user-profile {
-                padding: 8px 16px;
-                gap: 12px;
             }
 
             .main-content {
@@ -461,6 +497,11 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
         }
 
         @media (max-width: 480px) {
+            .navbar-container {
+                padding: 0 10px;
+                gap: 6px;
+            }
+            
             .brand-icon {
                 width: 36px;
                 height: 36px;
@@ -474,8 +515,13 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
             }
 
             .logout-btn {
-                padding: 6px 12px;
+                padding: 6px 10px;
                 font-size: 11px;
+            }
+            
+            .user-profile {
+                padding: 6px 10px;
+                gap: 6px;
             }
         }
 
@@ -694,7 +740,7 @@ $admin_name = $_SESSION['admin_name'] ?? $_SESSION['admin_username'] ?? 'Adminis
             <!-- Brand -->
             <a href="dashboard.php" class="navbar-brand">
                 <div class="brand-icon">
-                    <i class="fas fa-tooth"></i>
+                    <i class="fas fa-heart-pulse"></i>
                 </div>
                 <div class="brand-text">
                     <div class="brand-main">DentalCare</div>

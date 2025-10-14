@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_record'])) {
     $stmt = $conn->prepare("
         SELECT patient_email 
         FROM appointments 
-        WHERE doctor_id = ? AND patient_email = ? AND status = 'confirmed'
+        WHERE doctor_id = ? AND patient_email = ? AND (status = 'confirmed' OR status = 'completed')
     ");
     $stmt->bind_param("is", $doctor_id, $patient_email);
     $stmt->execute();
@@ -140,7 +140,7 @@ if ($search) {
             AND mr.doctor_id = ? 
             AND DATE(mr.visit_date) = ?
         WHERE a.doctor_id = ? 
-          AND a.status = 'confirmed' 
+          AND (a.status = 'confirmed' OR a.status = 'completed')
           AND a.patient_email IS NOT NULL
           AND a.appointment_date = ?
           AND (a.patient_name LIKE ? OR a.patient_email LIKE ? OR a.patient_phone LIKE ?)
@@ -166,7 +166,7 @@ if ($search) {
             AND mr.doctor_id = ? 
             AND DATE(mr.visit_date) = ?
         WHERE a.doctor_id = ? 
-          AND a.status = 'confirmed' 
+          AND (a.status = 'confirmed' OR a.status = 'completed')
           AND a.patient_email IS NOT NULL
           AND a.appointment_date = ?
         ORDER BY has_record_today ASC, a.patient_name ASC
@@ -710,7 +710,7 @@ $patients = $stmt->get_result();
         $stmt = $conn->prepare("
             SELECT patient_name 
             FROM appointments
-            WHERE doctor_id = ? AND patient_email = ? AND status = 'confirmed'
+            WHERE doctor_id = ? AND patient_email = ? AND (status = 'confirmed' OR status = 'completed')
             LIMIT 1
         ");
         $stmt->bind_param("is", $doctor_id, $patient_email);
