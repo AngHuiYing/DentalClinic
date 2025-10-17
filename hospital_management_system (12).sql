@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 10, 2025 at 02:54 PM
+-- Generation Time: Oct 14, 2025 at 09:59 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,7 +42,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `username`, `password`, `email`, `name`, `created_at`, `last_login`) VALUES
-(1, 'admin', '$2y$10$EKnGlwO9OClDZwN985u2WOTtSb0vMNpHPLDjBLEU4S9mvt8v0lZhq', 'admin@clinic.com', 'System Administrator', '2025-03-14 06:11:49', '2025-10-10 08:30:20');
+(1, 'admin', '$2y$10$EKnGlwO9OClDZwN985u2WOTtSb0vMNpHPLDjBLEU4S9mvt8v0lZhq', 'admin@clinic.com', 'System Administrator', '2025-03-14 06:11:49', '2025-10-14 07:44:05');
 
 -- --------------------------------------------------------
 
@@ -102,8 +102,10 @@ INSERT INTO `appointments` (`id`, `patient_id`, `doctor_id`, `appointment_date`,
 (75, 25, 2, '2025-10-04', '14:00:00', 'completed', '2025-10-01 08:10:37', 'testing', '601120452650', 'testing@mail.com', NULL, 1),
 (76, 17, 2, '2025-10-03', '16:30:00', 'confirmed', '2025-10-03 05:28:29', 'Riflori', '0198765432', 'yumeru5120@gmail.com', 'test bill', 1),
 (77, 16, 1, '2025-10-06', '14:00:00', 'confirmed', '2025-10-06 01:36:55', 'Nortrick', '0134567892', 'huiying9318@gmail.com', NULL, 1),
-(78, NULL, 2, '2025-10-06', '15:30:00', 'confirmed', '2025-10-06 06:42:32', 'Nortrick', '0134567892', 'huiying9318@gmail.com', NULL, 1),
-(79, 16, 5, '2025-10-07', '15:30:00', 'confirmed', '2025-10-06 07:55:41', 'Nortrick', '0134567892', 'huiying9318@gmail.com', NULL, 1);
+(78, NULL, 2, '2025-10-06', '15:30:00', 'completed', '2025-10-06 06:42:32', 'Nortrick', '0134567892', 'huiying9318@gmail.com', NULL, 1),
+(79, 16, 5, '2025-10-07', '15:30:00', 'confirmed', '2025-10-06 07:55:41', 'Nortrick', '0134567892', 'huiying9318@gmail.com', NULL, 1),
+(80, NULL, 1, '2025-10-12', '16:00:00', 'confirmed', '2025-10-12 04:21:02', 'Nortrick', '0123456789', 'huiying9318@gmail.com', 'test', 1),
+(81, NULL, 5, '2025-10-14', '17:00:00', 'completed', '2025-10-14 07:28:46', 'Riflori', '0198765432', 'yumeru5120@gmail.com', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -134,7 +136,8 @@ INSERT INTO `billing` (`id`, `patient_name`, `patient_email`, `patient_phone`, `
 (12, 'Riflori', 'yumeru5120@gmail.com', '0198765432', 'Teeth Cleaning,Filling Teeth', 100.00, 'Cash', '2025-09-25 02:07:42'),
 (14, 'Testlast', 'fong9318@gmail.com', '0198765432', 'Orthodontics Treatment', 3500.00, 'Cash', '2025-09-28 10:55:31'),
 (15, 'Nortrick', 'huiying9318@gmail.com', '0134567892', 'Teeth Cleaning,Orthodontics Treatment', 3560.00, 'Cash', '2025-10-01 02:19:44'),
-(19, 'Nortrick', 'huiying9318@gmail.com', '0134567892', 'Teeth Cleaning,Filling Teeth,Orthodontics Treatment', 3600.00, 'Cash', '2025-10-06 23:55:02');
+(19, 'Nortrick', 'huiying9318@gmail.com', '0134567892', 'Teeth Cleaning,Filling Teeth,Orthodontics Treatment', 3600.00, 'Cash', '2025-10-06 23:55:02'),
+(20, 'Riflori', 'yumeru5120@gmail.com', '0198765432', 'Teeth Cleaning,Filling Teeth', 100.00, 'Bank Transfer', '2025-10-14 07:44:37');
 
 -- --------------------------------------------------------
 
@@ -219,7 +222,7 @@ INSERT INTO `doctors` (`id`, `name`, `image`, `specialty`, `bio`, `experience`, 
 (5, 'ZhongLi', 'uploads/doctors/1759371724_WhatsApp Image 2025-10-02 at 10.18.34 AM (3).jpeg', 'Dental Implants', 'Dr.ZhongLi is good on Neurology.', '14', 'Room 11', 'implant', 5),
 (6, 'hy', 'uploads/doctors/1759371709_WhatsApp Image 2025-10-02 at 10.17.28 AM.jpeg', 'Cosmetic Dentistry', 'test only test', '2', 'Room 111', 'cosmetic', 9),
 (10, 'Azwa', 'uploads/doctors/1759371680_WhatsApp Image 2025-10-02 at 10.18.34 AM (2).jpeg', 'Implant', 'test', '10', 'Room 982', 'implant', 26),
-(11, 'Shirney', 'uploads/doctors/1759456200_WhatsApp Image 2025-10-02 at 10.18.34 AM (1).jpeg', 'Dental Implants', 'Professional', '11', 'Room 77', 'implant', 24);
+(11, 'Shirney', 'uploads/doctors/1759456200_WhatsApp Image 2025-10-02 at 10.18.34 AM (1).jpeg', 'Dental Implants', 'Professional', '11', 'Room 771', 'implant', 24);
 
 -- --------------------------------------------------------
 
@@ -294,7 +297,8 @@ INSERT INTO `medical_records` (`id`, `patient_id`, `patient_email`, `chief_compl
 (48, NULL, 'fong9318@gmail.com', 'testnewserv', 2, 'test', 'test', 'justtestt', 'tets', '2025-09-28', '2025-09-28 16:52:16', 1),
 (49, NULL, 'fong9318@gmail.com', 'testnewservaddd', 2, 'add', 'new', 'serv', 'testing', '2025-09-28', '2025-09-28 18:54:42', 1),
 (52, NULL, 'huiying9318@gmail.com', 'testing ah', 5, 'new content', 'testing it', 'new setting', 'new function', '2025-10-01', '2025-10-01 10:10:35', 1),
-(54, NULL, 'huiying9318@gmail.com', 'jbh', 2, 'asd', 'dasda', 'asda', 'asda', '2025-10-06', '2025-10-06 14:44:25', 1);
+(54, NULL, 'huiying9318@gmail.com', 'jbh', 2, 'asd', 'dasda', 'asda', 'asda', '2025-10-06', '2025-10-06 14:44:25', 1),
+(55, NULL, 'yumeru5120@gmail.com', 'Patient reports bleeding gums while brushing and bad breath.', 5, 'Chronic generalized gingivitis due to plaque accumulation.', 'Scaling and polishing.\r\nOral hygiene instruction and demonstration of proper brushing technique.\r\nRe-evaluate after 2 weeks.', 'Chlorhexidine mouthwash 0.12%, rinse twice daily for 7 days.\r\nNo systemic medication required.', 'Scaling and polishing completed. Patient advised on brushing twice daily and flossing. Mild inflammation still present; will review after 2 weeks.', '2025-10-14', '2025-10-14 15:43:07', 1);
 
 -- --------------------------------------------------------
 
@@ -324,7 +328,9 @@ INSERT INTO `medical_record_services` (`id`, `medical_record_id`, `service_id`) 
 (25, 52, 4),
 (29, 54, 1),
 (30, 54, 4),
-(32, 54, 2);
+(32, 54, 2),
+(33, 55, 2),
+(34, 55, 1);
 
 -- --------------------------------------------------------
 
@@ -507,8 +513,7 @@ INSERT INTO `users` (`id`, `name`, `email`, `phone`, `password`, `role`, `gender
 (21, 'Testlast', 'fong9318@gmail.com', '0198765432', '$2y$10$espaSF0UkeDAkBA4o.TLyeHVcgRem4n33lqfbZzX8eHQ8q3dAzQZW', 'patient', NULL, NULL, '2025-09-28 05:10:41'),
 (24, 'Shirney', 'shirneyang@gmail.com', '0123456789', '$2y$10$JbKN9zmnxTrhEFEPjEPa7enqmAQ30IdMwBsSBUOHgyES1hiB1f1um', 'doctor', NULL, NULL, '2025-09-28 15:37:50'),
 (25, 'testing', 'testing@mail.com', '601120452650', '$2y$10$yS/jC6VFJTqY8HdzcJphYugzNc4iUdByGsZIj.krLMR9MCJrvaWaq', 'patient', 'male', '2021-01-01', '2025-10-01 08:08:12'),
-(26, 'Azwa', 'nurhwny0515@gmail.com', '0123456789', '$2y$10$XFnzyvY.Y.kraE6mNY44LugYPOE/dO.fi70eR73MFfRZzZHCCaS.e', 'doctor', NULL, NULL, '2025-10-01 08:18:53'),
-(27, 'testing dc', 'test567@mail.com', '0123456789', '$2y$10$H0rLS/ONC6AkgYMVgVdhw.9CFJv3QX5omOPQIjjIW.7mt.1juvNk6', 'doctor', NULL, NULL, '2025-10-07 02:39:39');
+(26, 'Azwa', 'nurhwny0515@gmail.com', '0123456789', '$2y$10$XFnzyvY.Y.kraE6mNY44LugYPOE/dO.fi70eR73MFfRZzZHCCaS.e', 'doctor', NULL, NULL, '2025-10-01 08:18:53');
 
 -- --------------------------------------------------------
 
@@ -755,7 +760,18 @@ INSERT INTO `user_logs` (`id`, `admin_id`, `action`, `timestamp`) VALUES
 (225, 1, 'Admin logged in: System Administrator', '2025-10-10 01:33:00'),
 (226, 1, 'Admin logged in: System Administrator', '2025-10-10 02:24:12'),
 (227, 1, 'Admin logged in: System Administrator', '2025-10-10 05:16:14'),
-(228, 1, 'Admin logged in: System Administrator', '2025-10-10 08:30:20');
+(228, 1, 'Admin logged in: System Administrator', '2025-10-10 08:30:20'),
+(229, 1, 'Deleted user with ID: 27', '2025-10-11 06:27:55'),
+(230, 1, 'Admin logged in: System Administrator', '2025-10-11 11:42:29'),
+(231, 1, 'Admin logged in: System Administrator', '2025-10-13 02:08:28'),
+(232, 1, 'Admin logged in: System Administrator', '2025-10-13 03:41:12'),
+(233, 1, 'Admin logged in: System Administrator', '2025-10-13 03:43:48'),
+(234, 1, 'Admin logged in: System Administrator', '2025-10-13 05:15:29'),
+(235, 1, 'Admin logged in: System Administrator', '2025-10-13 06:21:04'),
+(236, 1, 'Admin logged in: System Administrator', '2025-10-13 08:26:19'),
+(237, 1, 'Admin logged in: System Administrator', '2025-10-14 06:36:32'),
+(238, 1, 'Admin logged in: System Administrator', '2025-10-14 07:21:32'),
+(239, 1, 'Admin logged in: System Administrator', '2025-10-14 07:44:05');
 
 --
 -- Indexes for dumped tables
@@ -888,13 +904,13 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
 -- AUTO_INCREMENT for table `billing`
 --
 ALTER TABLE `billing`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `chat_messages`
@@ -918,13 +934,13 @@ ALTER TABLE `doctor_reviews`
 -- AUTO_INCREMENT for table `medical_records`
 --
 ALTER TABLE `medical_records`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT for table `medical_record_services`
 --
 ALTER TABLE `medical_record_services`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `messages`
@@ -966,7 +982,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_logs`
 --
 ALTER TABLE `user_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=229;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=240;
 
 --
 -- Constraints for dumped tables

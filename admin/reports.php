@@ -20,18 +20,50 @@ $selected_start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
 $selected_end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
 $period_type = isset($_GET['period_type']) ? $_GET['period_type'] : 'yearly';
 
-// Auto-set date ranges based on period type
-if ($period_type == 'weekly' && empty($selected_start_date) && empty($selected_end_date)) {
-    // Set to current week (Monday to Sunday)
-    $selected_start_date = date('Y-m-d', strtotime('monday this week'));
-    $selected_end_date = date('Y-m-d', strtotime('sunday this week'));
-} elseif ($period_type == 'monthly' && empty($selected_start_date) && empty($selected_end_date)) {
-    // Set to current month
-    $selected_start_date = date('Y-m-01');
-    $selected_end_date = date('Y-m-t');
+// Smart parameter handling based on period type
+// Only auto-set dates if they are not manually specified
+if ($period_type == 'yearly') {
+    // For yearly view, ignore date range (but allow year and month filters from form)
+    // Don't auto-clear parameters - let user choose
+    
+} elseif ($period_type == 'monthly') {
+    // For monthly view, respect user's month selection
+    // If no month selected and no date range, default to current month
+    if ($selected_month == 0 && empty($selected_start_date) && empty($selected_end_date)) {
+        $selected_month = intval(date('n'));
+    }
+    
+} elseif ($period_type == 'weekly') {
+    // For weekly view, use date range if provided, otherwise set based on month selection or current week
+    if (empty($selected_start_date) && empty($selected_end_date)) {
+        if ($selected_month > 0) {
+            // If month is selected, show first week of that month
+            $first_day_of_month = date('Y-m-01', mktime(0, 0, 0, $selected_month, 1, $selected_year));
+            $first_monday = date('Y-m-d', strtotime('monday this week', strtotime($first_day_of_month)));
+            
+            // If the first Monday is before the month, get the first Monday within the month
+            if (date('n', strtotime($first_monday)) != $selected_month) {
+                $first_monday = date('Y-m-d', strtotime('next monday', strtotime($first_day_of_month . ' -1 day')));
+            }
+            
+            $selected_start_date = $first_monday;
+            $selected_end_date = date('Y-m-d', strtotime('sunday', strtotime($first_monday)));
+        } else {
+            // No month selected, use current week
+            $selected_start_date = date('Y-m-d', strtotime('monday this week'));
+            $selected_end_date = date('Y-m-d', strtotime('sunday this week'));
+        }
+    }
+    
 } elseif ($period_type == 'custom') {
-    // Keep user-selected dates as they are
-    // Don't auto-set anything for custom range
+    // For custom view, require date range
+    // If no dates provided, show empty state
+}
+
+// Auto-set date ranges for monthly view if month is selected but no date range
+if ($period_type == 'monthly' && $selected_month > 0 && empty($selected_start_date) && empty($selected_end_date)) {
+    $selected_start_date = date('Y-m-01', mktime(0, 0, 0, $selected_month, 1, $selected_year));
+    $selected_end_date = date('Y-m-t', mktime(0, 0, 0, $selected_month, 1, $selected_year));
 }
 
 // Build date filter conditions
@@ -130,18 +162,51 @@ if (!empty($selected_start_date) && !empty($selected_end_date)) {
 $prev_total_revenue = $conn->query("SELECT SUM(amount) as total FROM billing WHERE $prev_filter")->fetch_assoc()['total'] ?? 0;
 $revenue_growth = $prev_total_revenue > 0 ? (($total_revenue - $prev_total_revenue) / $prev_total_revenue) * 100 : 0;
 
-// Monthly revenue trend
-$monthly_revenue_query = "
-    SELECT 
-        MONTH(created_at) as month,
-        YEAR(created_at) as year,
-        SUM(amount) as revenue,
-        COUNT(*) as transaction_count
-    FROM billing 
-    WHERE " . $date_filter . "
-    GROUP BY YEAR(created_at), MONTH(created_at)
-    ORDER BY year, month
-";
+// Revenue trend query - adjust grouping based on period type
+if ($period_type == 'weekly' && !empty($selected_start_date) && !empty($selected_end_date)) {
+    // For weekly view, group by day
+    $monthly_revenue_query = "
+        SELECT 
+            DATE(created_at) as date,
+            DAY(created_at) as day,
+            MONTH(created_at) as month,
+            YEAR(created_at) as year,
+            SUM(amount) as revenue,
+            COUNT(*) as transaction_count
+        FROM billing 
+        WHERE " . $date_filter . "
+        GROUP BY DATE(created_at)
+        ORDER BY DATE(created_at)
+    ";
+} elseif ($period_type == 'monthly' && !empty($selected_start_date) && !empty($selected_end_date)) {
+    // For monthly view, group by day
+    $monthly_revenue_query = "
+        SELECT 
+            DATE(created_at) as date,
+            DAY(created_at) as day,
+            MONTH(created_at) as month,
+            YEAR(created_at) as year,
+            SUM(amount) as revenue,
+            COUNT(*) as transaction_count
+        FROM billing 
+        WHERE " . $date_filter . "
+        GROUP BY DATE(created_at)
+        ORDER BY DATE(created_at)
+    ";
+} else {
+    // For yearly and custom views, group by month
+    $monthly_revenue_query = "
+        SELECT 
+            MONTH(created_at) as month,
+            YEAR(created_at) as year,
+            SUM(amount) as revenue,
+            COUNT(*) as transaction_count
+        FROM billing 
+        WHERE " . $date_filter . "
+        GROUP BY YEAR(created_at), MONTH(created_at)
+        ORDER BY year, month
+    ";
+}
 echo "<!-- Debug: Monthly revenue query: " . htmlspecialchars($monthly_revenue_query) . " -->";
 $monthly_revenue = $conn->query($monthly_revenue_query);
 
@@ -376,6 +441,7 @@ $available_years = $conn->query("
     <!-- Export Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     
     <style>
         :root {
@@ -2092,6 +2158,9 @@ $available_years = $conn->query("
         <div class="filter-panel">
             <h5><i class="fas fa-sliders-h"></i>Filters & Settings</h5>
             <form method="GET" id="filterForm">
+                <!-- Hidden field to preserve period_type -->
+                <input type="hidden" name="period_type" value="<?= htmlspecialchars($period_type) ?>">
+                
                 <div class="row g-3 align-items-end">
                     <!-- Date Range Section -->
                     <div class="col-lg-2 col-md-3 col-sm-6">
@@ -2147,25 +2216,25 @@ $available_years = $conn->query("
                             <i class="fas fa-clock me-1"></i>Period Type
                         </label>
                         <div class="period-type-group">
-                            <a href="?period_type=yearly&year=<?= $selected_year ?>&month=0<?= !empty($selected_start_date) ? '&start_date=' . $selected_start_date : '' ?><?= !empty($selected_end_date) ? '&end_date=' . $selected_end_date : '' ?>" 
+                            <a href="?period_type=yearly&year=<?= $selected_year ?>" 
                                class="period-type-btn <?= $period_type == 'yearly' ? 'active' : '' ?>"
                                onclick="showNotification('🔄 Switching to yearly view...', 'info', 1000);">
                                 <i class="fas fa-calendar-alt"></i>
                                 Yearly
                             </a>
-                            <a href="?period_type=monthly&year=<?= $selected_year ?>&month=<?= $selected_month > 0 ? $selected_month : date('n') ?><?= !empty($selected_start_date) ? '&start_date=' . $selected_start_date : '' ?><?= !empty($selected_end_date) ? '&end_date=' . $selected_end_date : '' ?>" 
+                            <a href="?period_type=monthly&year=<?= $selected_year ?>&month=<?= $selected_month > 0 ? $selected_month : date('n') ?>" 
                                class="period-type-btn <?= $period_type == 'monthly' ? 'active' : '' ?>"
                                onclick="showNotification('🔄 Switching to monthly view...', 'info', 1000);">
                                 <i class="fas fa-calendar"></i>
                                 Monthly
                             </a>
-                            <a href="?period_type=weekly&year=<?= $selected_year ?><?= !empty($selected_start_date) ? '&start_date=' . $selected_start_date : '' ?><?= !empty($selected_end_date) ? '&end_date=' . $selected_end_date : '' ?>" 
+                            <a href="?period_type=weekly&year=<?= $selected_year ?>" 
                                class="period-type-btn <?= $period_type == 'weekly' ? 'active' : '' ?>"
                                onclick="showNotification('🔄 Switching to weekly view...', 'info', 1000);">
                                 <i class="fas fa-calendar-week"></i>
                                 Weekly
                             </a>
-                            <a href="?period_type=custom&year=<?= $selected_year ?>&start_date=<?= htmlspecialchars($selected_start_date) ?>&end_date=<?= htmlspecialchars($selected_end_date) ?>" 
+                            <a href="?period_type=custom&year=<?= $selected_year ?>" 
                                class="period-type-btn <?= $period_type == 'custom' ? 'active' : '' ?>"
                                onclick="showNotification('🔄 Switching to custom range...', 'info', 1000);">
                                 <i class="fas fa-calendar-plus"></i>
@@ -2492,8 +2561,18 @@ $available_years = $conn->query("
                 
                 echo "<!-- Debug: Processing monthly revenue data... -->";
                 
-                // Check if we're using date range filtering
-                if (!empty($selected_start_date) && !empty($selected_end_date)) {
+                // Check if we're using date range filtering or period type
+                if ($period_type == 'weekly' || $period_type == 'monthly') {
+                    // For weekly/monthly view with daily data
+                    while($row = $monthly_revenue->fetch_assoc()) {
+                        if (isset($row['date'])) {
+                            // Daily data
+                            $months[] = date('M j', strtotime($row['date']));
+                            $revenues[] = floatval($row['revenue']);
+                            $transactions[] = intval($row['transaction_count']);
+                        }
+                    }
+                } elseif (!empty($selected_start_date) && !empty($selected_end_date)) {
                     // For date ranges, only show months that have data
                     $monthlyData = [];
                     while($row = $monthly_revenue->fetch_assoc()) {
@@ -3178,7 +3257,7 @@ $available_years = $conn->query("
                 }
                 
                 // Show loading notification
-                showNotification('🔄 Generating PDF report...', 'info', 2000);
+                showNotification('🔄 Generating PDF report with charts...', 'info', 3000);
                 
                 // Create new PDF document
                 const { jsPDF } = window.jspdf;
@@ -3205,10 +3284,12 @@ $available_years = $conn->query("
                 // === SUMMARY SECTION ===
                 doc.setFontSize(14);
                 doc.setFont(undefined, 'bold');
+                doc.setTextColor(37, 99, 235);
                 doc.text('SUMMARY STATISTICS', 20, yPos);
                 yPos += 15;
                 
                 doc.setFontSize(11);
+                doc.setTextColor(0, 0, 0);
                 doc.setFont(undefined, 'bold');
                 doc.text('Total Patients:', 25, yPos);
                 doc.setFont(undefined, 'normal');
@@ -3236,6 +3317,7 @@ $available_years = $conn->query("
                 // === FINANCIAL SUMMARY BOX ===
                 doc.setFontSize(14);
                 doc.setFont(undefined, 'bold');
+                doc.setTextColor(37, 99, 235);
                 doc.text('FINANCIAL SUMMARY', 20, yPos);
                 yPos += 5;
                 
@@ -3246,25 +3328,432 @@ $available_years = $conn->query("
                 
                 doc.setFontSize(12);
                 doc.setFont(undefined, 'bold');
+                doc.setTextColor(0, 0, 0);
                 doc.text('TOTAL REVENUE FOR PERIOD:', 25, yPos + 8);
                 doc.setFontSize(16);
                 doc.setTextColor(37, 99, 235);
                 doc.text('RM <?= number_format($total_revenue, 2) ?>', 25, yPos + 16);
                 
-                // === FOOTER ===
                 yPos += 35;
-                doc.setTextColor(100, 100, 100);
-                doc.setFontSize(8);
-                doc.text('Green Life Dental Clinic - Confidential Report', 20, yPos);
-                doc.text('Generated: ' + new Date().toLocaleString(), 20, yPos + 5);
-                doc.text('Authorized by: Clinic Administration', 20, yPos + 10);
                 
-                // Save PDF
-                const currentDate = new Date().toISOString().slice(0, 10);
-                doc.save(`green_life_dental_report_${currentDate}.pdf`);
+                // === PREPARE CHART DATA FOR ALL REPORT TYPES ===
+                <?php
+                // Prepare data based on report type
+                $monthly_revenue->data_seek(0);
+                $chart_data = [];
                 
-                showNotification('✅ PDF report exported successfully!', 'success');
-                console.log('✅ PDF export completed successfully');
+                if ($period_type == 'yearly' || (empty($selected_start_date) && empty($selected_end_date) && $selected_month == 0)) {
+                    // Yearly report - show all 12 months
+                    $all_months = [];
+                    for ($m = 1; $m <= 12; $m++) {
+                        $all_months[$m] = [
+                            'month' => date('F', mktime(0, 0, 0, $m, 1)),
+                            'month_num' => $m,
+                            'revenue' => 0,
+                            'transactions' => 0
+                        ];
+                    }
+                    
+                    // Fill in actual data
+                    while($row = $monthly_revenue->fetch_assoc()) {
+                        $month_num = intval($row['month']);
+                        $all_months[$month_num] = [
+                            'month' => date('F', mktime(0, 0, 0, $month_num, 1)),
+                            'month_num' => $month_num,
+                            'revenue' => floatval($row['revenue']),
+                            'transactions' => intval($row['transaction_count'])
+                        ];
+                    }
+                    
+                    $chart_data = array_values($all_months);
+                    
+                } elseif ($period_type == 'monthly' || $selected_month > 0) {
+                    // Monthly report - show daily data
+                    if (!empty($selected_start_date) && !empty($selected_end_date)) {
+                        $start = new DateTime($selected_start_date);
+                        $end = new DateTime($selected_end_date);
+                        
+                        // Create array for all days in the month
+                        $daily_data = [];
+                        for ($date = clone $start; $date <= $end; $date->modify('+1 day')) {
+                            $date_key = $date->format('Y-m-d');
+                            $daily_data[$date_key] = [
+                                'month' => $date->format('M j'),
+                                'revenue' => 0,
+                                'transactions' => 0
+                            ];
+                        }
+                        
+                        // Fill in actual data from query
+                        while($row = $monthly_revenue->fetch_assoc()) {
+                            if (isset($row['date'])) {
+                                $date_key = $row['date'];
+                                if (isset($daily_data[$date_key])) {
+                                    $daily_data[$date_key]['revenue'] = floatval($row['revenue']);
+                                    $daily_data[$date_key]['transactions'] = intval($row['transaction_count']);
+                                }
+                            }
+                        }
+                        
+                        $chart_data = array_values($daily_data);
+                    }
+                    
+                } elseif ($period_type == 'weekly') {
+                    // Weekly report - show daily
+                    if (!empty($selected_start_date) && !empty($selected_end_date)) {
+                        $start = new DateTime($selected_start_date);
+                        $end = new DateTime($selected_end_date);
+                        
+                        // Create array for all days in the range
+                        $daily_data = [];
+                        for ($date = clone $start; $date <= $end; $date->modify('+1 day')) {
+                            $date_key = $date->format('Y-m-d');
+                            $daily_data[$date_key] = [
+                                'month' => $date->format('D, M j'),
+                                'revenue' => 0,
+                                'transactions' => 0
+                            ];
+                        }
+                        
+                        // Fill in actual data from query
+                        while($row = $monthly_revenue->fetch_assoc()) {
+                            if (isset($row['date'])) {
+                                $date_key = $row['date'];
+                                if (isset($daily_data[$date_key])) {
+                                    $daily_data[$date_key]['revenue'] = floatval($row['revenue']);
+                                    $daily_data[$date_key]['transactions'] = intval($row['transaction_count']);
+                                }
+                            }
+                        }
+                        
+                        $chart_data = array_values($daily_data);
+                    }
+                } else {
+                    // Custom range - aggregate by month
+                    while($row = $monthly_revenue->fetch_assoc()) {
+                        $chart_data[] = [
+                            'month' => date('M Y', mktime(0, 0, 0, $row['month'], 1, $row['year'])),
+                            'revenue' => floatval($row['revenue']),
+                            'transactions' => intval($row['transaction_count'])
+                        ];
+                    }
+                }
+                
+                // If no data, create empty chart with appropriate labels
+                if (empty($chart_data)) {
+                    if ($period_type == 'yearly') {
+                        for ($m = 1; $m <= 12; $m++) {
+                            $chart_data[] = [
+                                'month' => date('F', mktime(0, 0, 0, $m, 1)),
+                                'revenue' => 0,
+                                'transactions' => 0
+                            ];
+                        }
+                    } else {
+                        $chart_data[] = [
+                            'month' => 'No Data',
+                            'revenue' => 0,
+                            'transactions' => 0
+                        ];
+                    }
+                }
+                ?>
+                
+                // === MONTHLY/PERIOD BREAKDOWN TABLE ===
+                <?php if ($period_type == 'yearly' || (empty($selected_start_date) && empty($selected_end_date) && $selected_month == 0)): ?>
+                    
+                    // Create a new page for monthly breakdown
+                    doc.addPage();
+                    yPos = 20;
+                    
+                    doc.setFontSize(14);
+                    doc.setFont(undefined, 'bold');
+                    doc.setTextColor(37, 99, 235);
+                    doc.text('MONTHLY REVENUE BREAKDOWN', 20, yPos);
+                    yPos += 10;
+                    
+                    const monthlyData = <?= json_encode($chart_data) ?>;
+                    
+                    if (monthlyData && monthlyData.length > 0) {
+                        const tableData = monthlyData.map(item => [
+                            item.month,
+                            item.transactions.toString(),
+                            'RM ' + item.revenue.toFixed(2)
+                        ]);
+                        
+                        // Add total row
+                        const totalTransactions = monthlyData.reduce((sum, item) => sum + item.transactions, 0);
+                        const totalRevenue = monthlyData.reduce((sum, item) => sum + item.revenue, 0);
+                        tableData.push([
+                            'TOTAL',
+                            totalTransactions.toString(),
+                            'RM ' + totalRevenue.toFixed(2)
+                        ]);
+                        
+                        doc.autoTable({
+                            startY: yPos,
+                            head: [['Month', 'Transactions', 'Revenue']],
+                            body: tableData,
+                            theme: 'striped',
+                            margin: { left: 20, right: 20 },
+                            tableWidth: 'auto',
+                            headStyles: {
+                                fillColor: [37, 99, 235],
+                                fontSize: 10,
+                                fontStyle: 'bold',
+                                halign: 'center'
+                            },
+                            bodyStyles: {
+                                fontSize: 9,
+                                halign: 'center'
+                            },
+                            columnStyles: {
+                                0: { halign: 'left', cellWidth: 60 },
+                                1: { halign: 'center', cellWidth: 45 },
+                                2: { halign: 'right', cellWidth: 60 }
+                            },
+                            footStyles: {
+                                fillColor: [240, 240, 240],
+                                textColor: [0, 0, 0],
+                                fontStyle: 'bold'
+                            },
+                            didParseCell: function(data) {
+                                // Style the total row
+                                if (data.row.index === tableData.length - 1) {
+                                    data.cell.styles.fontStyle = 'bold';
+                                    data.cell.styles.fillColor = [37, 99, 235];
+                                    data.cell.styles.textColor = [255, 255, 255];
+                                }
+                            }
+                        });
+                        
+                        yPos = doc.lastAutoTable.finalY + 15;
+                        
+                        // Add monthly analysis summary
+                        doc.setFontSize(10);
+                        doc.setTextColor(100, 100, 100);
+                        doc.setFont(undefined, 'normal');
+                        
+                        // Calculate statistics
+                        const avgMonthlyRevenue = totalRevenue / monthlyData.length;
+                        const highestMonth = monthlyData.reduce((max, item) => item.revenue > max.revenue ? item : max);
+                        const lowestMonth = monthlyData.reduce((min, item) => item.revenue < min.revenue ? item : min);
+                        
+                        doc.text('Monthly Analysis:', 20, yPos);
+                        yPos += 7;
+                        doc.text('• Average Monthly Revenue: RM ' + avgMonthlyRevenue.toFixed(2), 25, yPos);
+                        yPos += 6;
+                        doc.text('• Highest Revenue Month: ' + highestMonth.month + ' (RM ' + highestMonth.revenue.toFixed(2) + ')', 25, yPos);
+                        yPos += 6;
+                        doc.text('• Lowest Revenue Month: ' + lowestMonth.month + ' (RM ' + lowestMonth.revenue.toFixed(2) + ')', 25, yPos);
+                        yPos += 20;
+                        
+                    }
+                <?php endif; ?>
+                
+                // Function to generate and add chart to PDF
+                function generateRevenueChart(data, pdfDoc, startY) {
+                    // Create a new page for the chart
+                    pdfDoc.addPage();
+                    let chartY = 20;
+                    
+                    pdfDoc.setFontSize(14);
+                    pdfDoc.setFont(undefined, 'bold');
+                    pdfDoc.setTextColor(37, 99, 235);
+                    pdfDoc.text('REVENUE TREND ANALYSIS', 20, chartY);
+                    chartY += 15;
+                    
+                    // Create a temporary canvas for the chart
+                    const tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = 1200;
+                    tempCanvas.height = 600;
+                    document.body.appendChild(tempCanvas);
+                    const ctx = tempCanvas.getContext('2d');
+                    
+                    // Prepare chart data
+                    const labels = data.map(item => item.month);
+                    const revenues = data.map(item => item.revenue || 0);
+                    const transactions = data.map(item => item.transactions || 0);
+                    
+                    // Create the chart
+                    const chartConfig = {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    type: 'bar',
+                                    label: 'Revenue (RM)',
+                                    data: revenues,
+                                    backgroundColor: 'rgba(37, 99, 235, 0.7)',
+                                    borderColor: 'rgba(37, 99, 235, 1)',
+                                    borderWidth: 2,
+                                    yAxisID: 'y',
+                                },
+                                {
+                                    type: 'line',
+                                    label: 'Transactions',
+                                    data: transactions,
+                                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                    borderColor: 'rgba(16, 185, 129, 1)',
+                                    borderWidth: 3,
+                                    fill: true,
+                                    tension: 0.4,
+                                    yAxisID: 'y1',
+                                    pointRadius: 5,
+                                    pointBackgroundColor: 'rgba(16, 185, 129, 1)',
+                                    pointBorderColor: '#fff',
+                                    pointBorderWidth: 2,
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: false,
+                            maintainAspectRatio: true,
+                            animation: {
+                                duration: 0
+                            },
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                    labels: {
+                                        font: { size: 16, weight: 'bold' },
+                                        padding: 20
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Revenue & Transaction Trends - <?= $period_description ?>',
+                                    font: { size: 20, weight: 'bold' },
+                                    padding: { top: 15, bottom: 25 }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'left',
+                                    title: {
+                                        display: true,
+                                        text: 'Revenue (RM)',
+                                        font: { size: 14, weight: 'bold' }
+                                    },
+                                    ticks: {
+                                        font: { size: 12 },
+                                        callback: function(value) {
+                                            return 'RM ' + value.toLocaleString();
+                                        }
+                                    },
+                                    beginAtZero: true
+                                },
+                                y1: {
+                                    type: 'linear',
+                                    display: true,
+                                    position: 'right',
+                                    title: {
+                                        display: true,
+                                        text: 'Transactions',
+                                        font: { size: 14, weight: 'bold' }
+                                    },
+                                    ticks: {
+                                        font: { size: 12 },
+                                        stepSize: 1
+                                    },
+                                    grid: {
+                                        drawOnChartArea: false,
+                                    },
+                                    beginAtZero: true
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: '<?= ucfirst($period_type) ?> Period',
+                                        font: { size: 14, weight: 'bold' }
+                                    },
+                                    ticks: {
+                                        font: { size: 12 },
+                                        maxRotation: 45,
+                                        minRotation: 45
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    
+                    const tempChart = new Chart(ctx, chartConfig);
+                    
+                    // Wait for chart to fully render
+                    setTimeout(() => {
+                        try {
+                            tempChart.update('none');
+                            const chartImage = tempCanvas.toDataURL('image/png', 1.0);
+                            pdfDoc.addImage(chartImage, 'PNG', 15, chartY, 180, 90);
+                            chartY += 100;
+                            
+                            // Add chart insights
+                            pdfDoc.setFontSize(10);
+                            pdfDoc.setTextColor(100, 100, 100);
+                            pdfDoc.setFont(undefined, 'italic');
+                            
+                            <?php if ($total_revenue > 0): ?>
+                            pdfDoc.text('Chart shows the correlation between revenue (bars) and transaction volume (line) for the selected period.', 20, chartY);
+                            chartY += 6;
+                            pdfDoc.text('Total Revenue: RM <?= number_format($total_revenue, 2) ?> | Total Transactions: ' + transactions.reduce((a, b) => a + b, 0), 20, chartY);
+                            <?php else: ?>
+                            pdfDoc.text('No revenue data available for the selected period (<?= $period_description ?>).', 20, chartY);
+                            chartY += 6;
+                            pdfDoc.text('Chart displays zero values for all data points.', 20, chartY);
+                            <?php endif; ?>
+                            
+                            // Cleanup
+                            tempChart.destroy();
+                            document.body.removeChild(tempCanvas);
+                            
+                            // Finalize PDF
+                            finalizePDF(pdfDoc);
+                        } catch (chartError) {
+                            console.error('Chart rendering error:', chartError);
+                            if (tempChart) tempChart.destroy();
+                            if (tempCanvas.parentNode) document.body.removeChild(tempCanvas);
+                            
+                            pdfDoc.setFontSize(10);
+                            pdfDoc.setTextColor(200, 0, 0);
+                            pdfDoc.text('Chart generation failed. Please try again.', 20, chartY);
+                            
+                            finalizePDF(pdfDoc);
+                        }
+                    }, 1500);
+                }
+                
+                // Function to finalize PDF
+                function finalizePDF(pdfDoc) {
+                    const pageCount = pdfDoc.internal.getNumberOfPages();
+                    for (let i = 1; i <= pageCount; i++) {
+                        pdfDoc.setPage(i);
+                        pdfDoc.setTextColor(100, 100, 100);
+                        pdfDoc.setFontSize(8);
+                        pdfDoc.text('Green Life Dental Clinic - Confidential Report', 20, 285);
+                        pdfDoc.text('Generated: ' + new Date().toLocaleString(), 20, 290);
+                        pdfDoc.text('Page ' + i + ' of ' + pageCount, 180, 290, { align: 'right' });
+                    }
+                    
+                    const currentDate = new Date().toISOString().slice(0, 10);
+                    const periodSuffix = '<?= $period_type ?>_<?= $selected_year ?>';
+                    pdfDoc.save(`green_life_dental_report_${periodSuffix}_${currentDate}.pdf`);
+                    
+                    showNotification('✅ PDF report with charts exported successfully!', 'success');
+                    console.log('✅ PDF export completed successfully');
+                }
+                
+                // === GENERATE CHART FOR ALL REPORT TYPES ===
+                const chartData = <?= json_encode($chart_data) ?>;
+                console.log('📊 Starting chart generation with data:', chartData);
+                
+                // Always generate chart, even if data is empty
+                generateRevenueChart(chartData, doc, yPos);
+                
+                // Exit function to wait for chart generation
+                return;
                 
             } catch (error) {
                 console.error('❌ PDF export error:', error);
@@ -3350,15 +3839,43 @@ $available_years = $conn->query("
             
             // Get current form values
             const form = document.getElementById('filterForm');
-            const startDate = form.querySelector('[name="start_date"]').value;
-            const endDate = form.querySelector('[name="end_date"]').value;
-            const year = form.querySelector('[name="year"]').value;
-            const month = form.querySelector('[name="month"]').value;
+            const startDateInput = form.querySelector('[name="start_date"]');
+            const endDateInput = form.querySelector('[name="end_date"]');
+            const periodTypeInput = form.querySelector('[name="period_type"]');
+            const yearSelect = form.querySelector('[name="year"]');
+            const monthSelect = form.querySelector('[name="month"]');
             
-            console.log('📋 Filter values:', { startDate, endDate, year, month });
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+            const year = yearSelect.value;
+            const month = monthSelect.value;
+            const periodType = periodTypeInput.value;
+            
+            console.log('📋 Filter values:', { startDate, endDate, year, month, periodType });
+            
+            // Clear date inputs when changing month in monthly view
+            if (periodType === 'monthly' && month !== '0') {
+                console.log('📅 Monthly view: Clearing date inputs to use month filter');
+                startDateInput.value = '';
+                endDateInput.value = '';
+            }
+            
+            // Clear date inputs when changing month in weekly view
+            if (periodType === 'weekly' && month !== '0') {
+                console.log('📅 Weekly view: Clearing date inputs to use month filter');
+                startDateInput.value = '';
+                endDateInput.value = '';
+            }
+            
+            // Clear date inputs when changing to yearly view
+            if (periodType === 'yearly') {
+                console.log('📅 Yearly view: Clearing date inputs');
+                startDateInput.value = '';
+                endDateInput.value = '';
+            }
             
             // Validate date range if both dates are provided
-            if (startDate && endDate && startDate > endDate) {
+            if (startDateInput.value && endDateInput.value && startDateInput.value > endDateInput.value) {
                 showNotification('⚠️ Start date cannot be after end date', 'warning');
                 return false;
             }
@@ -3379,31 +3896,11 @@ $available_years = $conn->query("
         function resetFilters() {
             console.log('🔄 Resetting filters to defaults...');
             
-            // Reset all filter inputs to default values
-            const form = document.getElementById('filterForm');
+            // Navigate to default view (yearly, current year, all months)
+            const currentYear = '<?= date('Y') ?>';
+            window.location.href = '?period_type=yearly&year=' + currentYear;
             
-            // Reset year to current year
-            const yearSelect = form.querySelector('select[name="year"]');
-            if (yearSelect) {
-                yearSelect.value = '<?= date('Y') ?>';
-            }
-            
-            // Reset month to "All Months"
-            const monthSelect = form.querySelector('select[name="month"]');
-            if (monthSelect) {
-                monthSelect.value = '0';
-            }
-            
-            // Clear date inputs
-            const startDateInput = form.querySelector('input[name="start_date"]');
-            const endDateInput = form.querySelector('input[name="end_date"]');
-            if (startDateInput) startDateInput.value = '';
-            if (endDateInput) endDateInput.value = '';
-            
-            showNotification('🔄 Resetting filters...', 'info', 1000);
-            
-            // Submit with reset values
-            form.submit();
+            showNotification('🔄 Resetting to default view...', 'info', 1000);
         }
 
         // Test function for debugging
