@@ -625,6 +625,17 @@ $result = $conn->query("SELECT * FROM billing ORDER BY created_at DESC LIMIT $bi
             .stat-number {
                 font-size: 2rem;
             }
+            
+            /* Search container responsive */
+            .search-container input::placeholder {
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .search-container input::placeholder {
+                font-size: 0.85rem;
+            }
         }
 
         /* Hover Effects */
@@ -825,6 +836,24 @@ $result = $conn->query("SELECT * FROM billing ORDER BY created_at DESC LIMIT $bi
                 $(this).toggle(text.indexOf(filter) > -1);
             });
         });
+
+        // Responsive placeholder text for search input
+        function updateSearchPlaceholder() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                if (window.innerWidth <= 576) {
+                    searchInput.placeholder = "Search records...";
+                } else if (window.innerWidth <= 768) {
+                    searchInput.placeholder = "Search by name or email...";
+                } else {
+                    searchInput.placeholder = "Search billing records by Patient Name or Email...";
+                }
+            }
+        }
+
+        // Update placeholder on page load and window resize
+        updateSearchPlaceholder();
+        window.addEventListener('resize', updateSearchPlaceholder);
 
         // Form submission loading state
         $('#billingForm').on('submit', function(e) {

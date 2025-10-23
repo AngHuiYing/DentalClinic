@@ -603,32 +603,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
             outline: 2px solid var(--primary-color);
             outline-offset: 2px;
         }
-
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            .login-card {
-                background: rgba(15, 23, 42, 0.95);
-                color: var(--gray-100);
-            }
-            
-            .login-title {
-                color: var(--gray-100);
-            }
-            
-            .login-subtitle {
-                color: var(--gray-400);
-            }
-            
-            .form-control {
-                background: rgba(30, 41, 59, 0.5);
-                border-color: var(--gray-600);
-                color: var(--gray-100);
-            }
-            
-            .form-control::placeholder {
-                color: var(--gray-500);
-            }
-        }
     </style>
 </head>
 <body>

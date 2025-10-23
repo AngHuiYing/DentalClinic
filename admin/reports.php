@@ -2053,6 +2053,82 @@ $available_years = $conn->query("
             font-weight: 700;
             font-size: 1.1rem;
         }
+
+        /* Horizontal Scroll Containers for Mobile Tables */
+        .table-scroll-container {
+            overflow-x: auto;
+            overflow-y: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background: white;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+
+        .table-scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-scroll-container::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .table-scroll-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+        }
+
+        .table-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(90deg, #5a67d8 0%, #6b46c1 100%);
+        }
+
+        /* Ensure tables maintain proper width when scrolling */
+        .table-scroll-container .table {
+            min-width: 600px; /* Minimum width to prevent crushing */
+            margin-bottom: 0;
+        }
+
+        .table-scroll-container .modern-table {
+            min-width: 700px; /* Payment methods table needs more space */
+        }
+
+        /* Chart container scroll for mobile */
+        @media (max-width: 768px) {
+            .chart-container {
+                overflow-x: auto;
+            }
+            
+            .canvas-wrapper {
+                min-width: 400px; /* Prevent chart crushing */
+            }
+            
+            .table-scroll-container .table {
+                min-width: 500px; /* Smaller minimum on mobile */
+            }
+            
+            .table-scroll-container .modern-table {
+                min-width: 600px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .table-scroll-container .table {
+                min-width: 480px;
+                font-size: 0.85rem;
+            }
+            
+            .table-scroll-container .modern-table {
+                min-width: 550px;
+                font-size: 0.85rem;
+            }
+            
+            .table-scroll-container th,
+            .table-scroll-container td {
+                padding: 0.5rem 0.75rem;
+                white-space: nowrap;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2375,7 +2451,8 @@ $available_years = $conn->query("
                     <?php if (count($payment_analysis_data) > 0): ?>
                         <div class="unified-payment-section">
                             <div class="payment-summary-table">
-                                <table class="table table-hover modern-table">
+                                <div class="table-scroll-container">
+                                    <table class="table table-hover modern-table">
                                     <thead>
                                         <tr>
                                             <th scope="col">Payment Method</th>
@@ -2421,6 +2498,7 @@ $available_years = $conn->query("
                                         <?php endforeach; ?>
                                     </tbody>
                                 </table>
+                                </div>
                             </div>
                         </div>
                     <?php else: ?>
@@ -3912,6 +3990,50 @@ $available_years = $conn->query("
             console.log('Payment data:', paymentMethodData);
             return false; // Prevent default behavior
         }
+
+        // Responsive chart handling for mobile devices
+        function handleResponsiveCharts() {
+            const isMobile = window.innerWidth <= 768;
+            const charts = [monthlyTrendChart, serviceChart, paymentChart].filter(chart => chart);
+            
+            charts.forEach(chart => {
+                if (chart && chart.options) {
+                    // Update responsive options
+                    chart.options.responsive = true;
+                    chart.options.maintainAspectRatio = !isMobile;
+                    
+                    // Adjust font sizes for mobile
+                    if (isMobile) {
+                        chart.options.plugins = chart.options.plugins || {};
+                        chart.options.plugins.legend = chart.options.plugins.legend || {};
+                        chart.options.plugins.legend.labels = chart.options.plugins.legend.labels || {};
+                        chart.options.plugins.legend.labels.font = { size: 10 };
+                        
+                        // Reduce padding on mobile
+                        chart.options.layout = chart.options.layout || {};
+                        chart.options.layout.padding = isMobile ? 10 : 20;
+                    }
+                    
+                    chart.update('none'); // Update without animation
+                }
+            });
+        }
+
+        // Add window resize listener for responsive behavior
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                handleResponsiveCharts();
+                console.log('📱 Charts updated for screen size:', window.innerWidth);
+            }, 250);
+        });
+
+        // Initialize responsive behavior when charts are created
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait a bit for charts to be initialized
+            setTimeout(handleResponsiveCharts, 1000);
+        });
 
         // Add CSS animations
         const style = document.createElement('style');

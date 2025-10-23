@@ -590,8 +590,28 @@ $services = $conn->query("SELECT * FROM services ORDER BY id DESC LIMIT $service
             }
 
             .stats-container {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 15px;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px 10px;
+                min-height: 100px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .stat-number {
+                font-size: 1.3rem;
+                line-height: 1.2;
+                word-break: break-all;
+                overflow-wrap: break-word;
+            }
+
+            .stat-label {
+                font-size: 0.75rem;
+                line-height: 1.3;
             }
 
             .action-buttons {
@@ -601,6 +621,32 @@ $services = $conn->query("SELECT * FROM services ORDER BY id DESC LIMIT $service
 
             .action-buttons .btn {
                 margin-bottom: 5px;
+            }
+        }
+
+        /* Extra small devices (phones, 576px and down) */
+        @media (max-width: 576px) {
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            .stat-card {
+                padding: 12px 8px;
+                min-height: 90px;
+            }
+
+            .stat-number {
+                font-size: 1.1rem;
+                font-weight: 700;
+            }
+
+            .stat-label {
+                font-size: 0.7rem;
+            }
+
+            .main-container {
+                padding: 0 10px;
             }
         }
         
