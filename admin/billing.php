@@ -3,6 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require_once __DIR__ . "/../db.php";
+date_default_timezone_set("Asia/Kuala_Lumpur");
 
 // 只有 admin 可以進來
 if (!isset($_SESSION['admin_id']) || $_SESSION['user_role'] !== 'admin') {
@@ -18,10 +19,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['patient_name'])) {
     $service       = $_POST['service'];
     $amount        = $_POST['amount'];
     $payment_method= $_POST['payment_method'];
+    
+    // 使用 PHP 的當前時間（已設置為吉隆坡時區）
+    $current_time = date('Y-m-d H:i:s');
 
     $stmt = $conn->prepare("INSERT INTO billing (patient_name, patient_email, patient_phone, service, amount, payment_method, created_at) 
-                            VALUES (?, ?, ?, ?, ?, ?, NOW())");
-    $stmt->bind_param("ssssds", $patient_name, $patient_email, $patient_phone, $service, $amount, $payment_method);
+                            VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssdss", $patient_name, $patient_email, $patient_phone, $service, $amount, $payment_method, $current_time);
 
     if ($stmt->execute()) {
         $success_msg = "Billing record added successfully!";

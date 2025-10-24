@@ -210,42 +210,35 @@ if ($period_type == 'weekly' && !empty($selected_start_date) && !empty($selected
 echo "<!-- Debug: Monthly revenue query: " . htmlspecialchars($monthly_revenue_query) . " -->";
 $monthly_revenue = $conn->query($monthly_revenue_query);
 
-// Dental services analysis - Fixed query with proper date filtering
+// Dental services analysis - Based on actual billing records with proper service matching
 $service_performance_query = "
     SELECT 
         s.name as service_name,
         s.price as unit_price,
-        COUNT(mrs.service_id) as frequency,
-        SUM(s.price) as total_revenue,
-        ROUND(AVG(s.price), 2) as avg_price
-    FROM medical_record_services mrs
-    JOIN services s ON mrs.service_id = s.id
-    JOIN medical_records mr ON mrs.medical_record_id = mr.id
-    WHERE 1=1";
+        COUNT(*) as frequency,
+        SUM(
+            CASE 
+                WHEN FIND_IN_SET(s.name, b.service) > 0 THEN s.price
+                ELSE 0
+            END
+        ) as total_revenue,
+        s.price as avg_price,
+        s.id as service_id
+    FROM billing b
+    CROSS JOIN services s
+    WHERE FIND_IN_SET(s.name, b.service) > 0";
 
-// Apply unified date filters to all queries
+// Apply date filters to billing records
 if (!empty($selected_start_date) && !empty($selected_end_date)) {
-    // For medical services: use both visit_date and created_at for better coverage
-    $service_performance_query .= " AND (
-        (mr.visit_date >= '" . $conn->real_escape_string($selected_start_date) . "' AND mr.visit_date <= '" . $conn->real_escape_string($selected_end_date) . "')
-        OR (mr.created_at >= '" . $conn->real_escape_string($selected_start_date) . " 00:00:00' AND mr.created_at <= '" . $conn->real_escape_string($selected_end_date) . " 23:59:59')
-    )";
+    $service_performance_query .= " AND b.created_at >= '" . $conn->real_escape_string($selected_start_date) . " 00:00:00' 
+                                    AND b.created_at <= '" . $conn->real_escape_string($selected_end_date) . " 23:59:59'";
 } elseif (!empty($selected_start_date)) {
-    $service_performance_query .= " AND (
-        mr.visit_date >= '" . $conn->real_escape_string($selected_start_date) . "'
-        OR mr.created_at >= '" . $conn->real_escape_string($selected_start_date) . " 00:00:00'
-    )";
+    $service_performance_query .= " AND b.created_at >= '" . $conn->real_escape_string($selected_start_date) . " 00:00:00'";
 } elseif (!empty($selected_end_date)) {
-    $service_performance_query .= " AND (
-        mr.visit_date <= '" . $conn->real_escape_string($selected_end_date) . "'
-        OR mr.created_at <= '" . $conn->real_escape_string($selected_end_date) . " 23:59:59'
-    )";
+    $service_performance_query .= " AND b.created_at <= '" . $conn->real_escape_string($selected_end_date) . " 23:59:59'";
 } else {
-    // Use unified year/month filters - prioritize visit_date but fallback to created_at
-    $service_performance_query .= " AND (
-        (YEAR(mr.visit_date) = $selected_year" . ($selected_month > 0 ? " AND MONTH(mr.visit_date) = $selected_month" : "") . ")
-        OR (mr.visit_date IS NULL AND YEAR(mr.created_at) = $selected_year" . ($selected_month > 0 ? " AND MONTH(mr.created_at) = $selected_month" : "") . ")
-    )";
+    // Use year/month filters for billing records
+    $service_performance_query .= " AND YEAR(b.created_at) = $selected_year" . ($selected_month > 0 ? " AND MONTH(b.created_at) = $selected_month" : "");
 }
 
 $service_performance_query .= " GROUP BY s.id, s.name, s.price ORDER BY total_revenue DESC LIMIT 10";
@@ -260,6 +253,7 @@ if ($service_performance->num_rows > 0) {
         $service_performance_data[] = $row;
     }
 }
+echo "<!-- Debug: Total service records: " . count($service_performance_data) . " -->";
 
 // Doctor revenue performance - Based on actual medical services provided
 $doctor_revenue_query = "
@@ -809,6 +803,18 @@ $available_years = $conn->query("
         .btn-primary.btn-action {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-color: #667eea;
+        }
+
+        .btn-success.btn-action {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-color: #10b981;
+            color: white;
+        }
+
+        .btn-success.btn-action:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            border-color: #059669;
+            color: white;
         }
 
         .btn-outline-secondary.btn-action {
@@ -2233,6 +2239,20 @@ $available_years = $conn->query("
         <!-- Advanced Filter Panel -->
         <div class="filter-panel">
             <h5><i class="fas fa-sliders-h"></i>Filters & Settings</h5>
+            
+            <!-- User Reminder Notice -->
+            <div class="alert alert-info border-0 mb-4" style="background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%); border-left: 4px solid #3b82f6;">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-info-circle text-primary me-3" style="font-size: 1.2rem;"></i>
+                    <div>
+                        <strong class="text-primary">💡 Friendly Reminder:</strong>
+                        <span class="text-dark ms-2">After selecting your desired filters (dates, months, years), please click the <strong class="text-success">"Apply Filters"</strong> button to update the data and charts.</span>
+                        <br>
+                        <span class="text-dark ms-2">💫 <strong>Pro Tip:</strong> If you want to change or clear your filter settings, click the <strong class="text-warning">"Reset All"</strong> button to avoid any confusion and start fresh!</span>
+                    </div>
+                </div>
+            </div>
+            
             <form method="GET" id="filterForm">
                 <!-- Hidden field to preserve period_type -->
                 <input type="hidden" name="period_type" value="<?= htmlspecialchars($period_type) ?>">
@@ -2245,7 +2265,7 @@ $available_years = $conn->query("
                         </label>
                         <input type="date" name="start_date" class="form-control date-picker" 
                                value="<?= htmlspecialchars($selected_start_date) ?>" 
-                               onchange="updateFilters()">
+                               onchange="handleDateChange(this)">
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-6">
                         <label class="form-label fw-semibold text-muted">
@@ -2253,7 +2273,7 @@ $available_years = $conn->query("
                         </label>
                         <input type="date" name="end_date" class="form-control date-picker" 
                                value="<?= htmlspecialchars($selected_end_date) ?>" 
-                               onchange="updateFilters()">
+                               onchange="handleDateChange(this)">
                     </div>
                     
                     <!-- Time Period Section -->
@@ -2261,7 +2281,7 @@ $available_years = $conn->query("
                         <label class="form-label fw-semibold text-muted">
                             <i class="fas fa-calendar me-1"></i>Year
                         </label>
-                        <select name="year" class="form-select" onchange="updateFilters()">
+                        <select name="year" class="form-select">
                             <?php 
                             // Reset the result pointer for available_years
                             $available_years->data_seek(0);
@@ -2276,7 +2296,7 @@ $available_years = $conn->query("
                         <label class="form-label fw-semibold text-muted">
                             <i class="fas fa-calendar-check me-1"></i>Month
                         </label>
-                        <select name="month" class="form-select" onchange="updateFilters()">
+                        <select name="month" class="form-select">
                             <option value="0" <?= $selected_month == 0 ? 'selected' : '' ?>>All Months</option>
                             <?php for($i = 1; $i <= 12; $i++): ?>
                             <option value="<?= $i ?>" <?= $selected_month == $i ? 'selected' : '' ?>>
@@ -2324,6 +2344,9 @@ $available_years = $conn->query("
                 <div class="row mt-4">
                     <div class="col-md-6">
                         <div class="d-flex gap-2 flex-wrap">
+                            <button type="button" class="btn btn-success btn-action" onclick="updateFilters()">
+                                <i class="fas fa-filter me-2"></i>Apply Filters
+                            </button>
                             <button type="button" class="btn btn-primary btn-action" onclick="refreshData()">
                                 <i class="fas fa-sync-alt me-2"></i>Refresh Data
                             </button>
@@ -3912,6 +3935,28 @@ $available_years = $conn->query("
         }
 
         // Enhanced filter and refresh functions
+        
+        // Handle date input changes without auto-submitting
+        function handleDateChange(input) {
+            console.log('📅 Date changed:', input.name, input.value);
+            
+            // Just validate the date range if both dates are filled
+            const form = document.getElementById('filterForm');
+            const startDateInput = form.querySelector('[name="start_date"]');
+            const endDateInput = form.querySelector('[name="end_date"]');
+            
+            if (startDateInput.value && endDateInput.value && startDateInput.value > endDateInput.value) {
+                showNotification('⚠️ Start date cannot be after end date', 'warning');
+                input.value = ''; // Clear the invalid date
+                return;
+            }
+            
+            // Show a hint that user needs to click Apply Filters
+            if (startDateInput.value || endDateInput.value) {
+                showNotification('📅 Date selected. Click "Apply Filters" to update.', 'info', 3000);
+            }
+        }
+        
         function updateFilters() {
             console.log('🔄 Updating filters...');
             
@@ -3931,25 +3976,32 @@ $available_years = $conn->query("
             
             console.log('📋 Filter values:', { startDate, endDate, year, month, periodType });
             
-            // Clear date inputs when changing month in monthly view
-            if (periodType === 'monthly' && month !== '0') {
-                console.log('📅 Monthly view: Clearing date inputs to use month filter');
-                startDateInput.value = '';
-                endDateInput.value = '';
-            }
+            // 智能過濾邏輯：
+            // 1. 如果用戶設置了日期範圍，優先使用日期範圍，不清空
+            // 2. 如果沒有日期範圍，才使用period type邏輯
             
-            // Clear date inputs when changing month in weekly view
-            if (periodType === 'weekly' && month !== '0') {
-                console.log('📅 Weekly view: Clearing date inputs to use month filter');
-                startDateInput.value = '';
-                endDateInput.value = '';
-            }
+            const hasDateRange = startDate || endDate;
             
-            // Clear date inputs when changing to yearly view
-            if (periodType === 'yearly') {
-                console.log('📅 Yearly view: Clearing date inputs');
-                startDateInput.value = '';
-                endDateInput.value = '';
+            if (!hasDateRange) {
+                // 只有在沒有自定義日期範圍時，才應用period type的自動日期設置
+                console.log('📅 No custom date range, applying period type logic');
+                
+                // Clear dates for yearly view (let it use year/month filters)
+                if (periodType === 'yearly') {
+                    console.log('📅 Yearly view: Using year/month filters');
+                    // 不清空日期，讓後端邏輯處理
+                }
+                
+                // For monthly view with specific month, could auto-set dates
+                // but only if no dates are currently set
+                if (periodType === 'monthly' && month !== '0') {
+                    console.log('📅 Monthly view: Could auto-set month range');
+                    // 這裡可以考慮自動設置月份範圍，但不強制
+                }
+            } else {
+                console.log('📅 Custom date range detected, preserving user selection');
+                // 有自定義日期範圍時，不做任何清空操作
+                // 讓用戶的選擇優先
             }
             
             // Validate date range if both dates are provided
